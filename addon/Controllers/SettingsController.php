@@ -38,20 +38,30 @@ class SettingsController extends Controller
      * Registers admin page.
      * @since 1.0.0
      *
-     * @param array $links
+     * @param object $main Main class reference.
      *
      * @return array
      */
-    public function admin_menu()
+    public function admin_menu( $main )
     {
-        add_submenu_page(
-            null,
-            __( 'Manage License Key', 'license_keys' ),
-            __( 'Manage License Key', 'license_keys' ),
-            'manage_options',
-            'addon-manage-license-key',
-            [&$this, 'display_page']
-        );
+        if ( $main->config->get( 'type' ) === 'plugin' ) {
+            add_submenu_page(
+                null,
+                __( 'Manage License Key', 'license_keys' ),
+                __( 'License Key', 'license_keys' ),
+                'manage_options',
+                'addon-manage-license-key',
+                [&$this, 'display_page']
+            );
+        } else if ( $main->config->get( 'type' ) === 'theme' ) {
+            add_theme_page(
+                __( 'Manage License Key', 'license_keys' ),
+                __( 'License Key', 'license_keys' ),
+                'manage_options',
+                'addon-manage-license-key',
+                [&$this, 'display_page']
+            );
+        } 
     }
     /**
      * Displays manage page.

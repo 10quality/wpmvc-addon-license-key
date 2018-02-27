@@ -21,9 +21,15 @@
                 ) ?>
             </span>
             <span>
-                <a href="<?= admin_url( '/admin.php?page=addon-manage-license-key&ref='.strtolower( $main->config->get( 'namespace' ) ) ) ?>">
-                    <?php _e( 'Activate License Key', 'addon' ) ?>
-                </a>
+                <?php if ( $main->config->get( 'type' ) === 'plugin' ) : ?>
+                    <a href="<?= admin_url( '/admin.php?page=addon-manage-license-key&ref='.strtolower( $main->config->get( 'namespace' ) ) ) ?>">
+                        <?php _e( 'Activate License Key', 'addon' ) ?>
+                    </a>
+                <?php elseif ( $main->config->get( 'type' ) === 'theme' ) : ?>
+                    <a href="<?= admin_url( '/themes.php?page=addon-manage-license-key&ref=theme' ) ?>">
+                        <?php _e( 'Activate License Key', 'addon' ) ?>
+                    </a>
+                <?php endif ?>
             </span>
         </li>
     </ul>

@@ -36,10 +36,13 @@ class LicenseKeyAddon extends Addon
      */
     public function on_admin()
     {
-        add_filter(
-            'plugin_action_links_'.$this->main->config->get('paths.base_file'),
-            [&$this, 'filter_action_links']
-        );
+        // Add action link for plugin
+        if ( $this->main->config->get( 'paths.base_file' ) )
+            add_filter(
+                'plugin_action_links_'.$this->main->config->get( 'paths.base_file' ),
+                [&$this, 'filter_action_links']
+            );
+        // Add manage page
         add_action('admin_menu', [&$this, 'admin_menu'], 99);
     }
     /**

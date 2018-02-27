@@ -78,7 +78,7 @@ span.status-invalid {
             $main->config->get('license_api.name')
         ) ?>
     </h1>
-    <?php if ( count( $errors ) > 0 ) : ?>
+    <?php if ( is_array( $errors ) && count( $errors ) > 0 ) : ?>
         <div class="notices">
             <?php foreach ( $errors as $key => $messages ) : ?>
                 <div class="notice notice-error <?= $key ?>">

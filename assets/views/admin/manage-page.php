@@ -5,7 +5,7 @@
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.0
+ * @version 1.0.1
  */
 ?>
 <style type="text/css">
@@ -59,6 +59,15 @@ span.status-valid {
 span.status-invalid {
     color: #F44336;
     font-weight: 600;
+}
+@media screen and (max-width:440px) {
+    code.the-key {
+        width: 100%;
+        padding: 6px 0;
+        margin-bottom: 10px;
+        color: #00008b;
+        font-size: 12px;
+    }
 }
 </style>
 <div class="wrap addon-license-key <?= $ref ?>-license-key">

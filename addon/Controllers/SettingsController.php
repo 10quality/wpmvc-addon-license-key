@@ -90,6 +90,7 @@ class SettingsController extends Controller
             'errors'        => $errors,
             'response'      => $response,
             'license_key'   => $license_key,
+            'ref'           => $ref,
         ] );
     }
 }

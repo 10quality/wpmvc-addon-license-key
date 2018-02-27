@@ -52,8 +52,16 @@ code.the-key {
     color: #00008b;
     font-size: 20px;
 }
+span.status-valid {
+    color: #4CAF50;
+    font-weight: 600;
+}
+span.status-invalid {
+    color: #F44336;
+    font-weight: 600;
+}
 </style>
-<div class="wrap">
+<div class="wrap addon-license-key <?= $ref ?>-license-key">
     <h1 class="wp-heading-inline">
         <?= sprintf(
             __( 'Manage License Key for %s <strong>%s</strong>', 'addon' ),
@@ -114,6 +122,16 @@ code.the-key {
                             <td><?= date( get_option( 'date_format' ), $license->data->expire ) ?></td>
                         </tr>
                     <?php endif ?>
+                    <tr>
+                        <th><?php _e( 'Status', 'addon' ) ?></th>
+                        <td>
+                            <?php if ( $main->is_valid ) : ?>
+                                <span class="status-valid"><?php _e( 'Valid activation.', 'addon' ) ?></span>
+                            <?php else : ?>
+                                <span class="status-invalid"><?php _e( 'Activation no longer valid.', 'addon' ) ?></span>
+                            <?php endif ?>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <form method="POST">
@@ -157,4 +175,5 @@ code.the-key {
             </form>
         <?php endif ?>
     </div><!--.panel-->
+    <?php do_action( 'addon_license_key_after_manage_page_' . $ref ) ?>
 </div><!--wrap-->

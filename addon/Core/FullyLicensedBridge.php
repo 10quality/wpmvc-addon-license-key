@@ -2,7 +2,7 @@
 
 namespace WPMVC\Addons\LicenseKey\Core;
 
-use WPMVC\Addons\LicenseKey\Addon;
+use WPMVC\Addons\LicenseKey\LicenseKeyAddon as Addon;
 
 /**
  * Fully Licensed Bridge work only with valid license key.

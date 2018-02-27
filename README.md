@@ -29,7 +29,7 @@ If your are using a plugin, add the following to the paths array:
         'base_file'     => 'your-plugin-folder-name/plugin.php',
 
     ],
---
+---
 
 Add an extra set of settings prior to closing the configuration array:
 ---php

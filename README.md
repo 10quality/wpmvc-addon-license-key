@@ -19,22 +19,18 @@ Then on your project's `app\config\app.php` add the following on the addons arra
 ```
 
 If your are using a plugin, add the following to the paths array:
-
----php
+```php
     'paths' => [
-
         'base'          => __DIR__ . '/../',
         'controllers'   => __DIR__ . '/../Controllers/',
         'views'         => __DIR__ . '/../../assets/views/',
         'log'           => get_wp_home_path() . './wpmvc/log',
         'base_file'     => 'your-plugin-folder-name/plugin.php',
-
     ],
----
+```
 
 Add an extra set of settings prior to closing the configuration array:
-
----php
+```php
     'license_api' => [
         'url'           => 'http://your-store.com/wp-admin/admin-ajax.php',
         'store_code'    => 'YOUR STORE CODE',
@@ -43,7 +39,7 @@ Add an extra set of settings prior to closing the configuration array:
         'option_name'   => 'WORDPRESS OPTION NAME OF CHOICE',
         'ck'            => 'AN ENCRYPTION KEY'
     ],
----
+```
 
 ## Usage
 
@@ -53,15 +49,15 @@ A fully licensed product will allow to restricted your entire project under a li
 
 Change the following at your project's main class:
 
----php
+```php
 use WPMVC\Bridge;
----
+```
 
 For:
 
----php
+```php
 use WPMVC\Addons\LicenseKey\Core\FullyLicensedBridge as Bridge;
----
+```
 
 ### Partially licensed product
 
@@ -69,15 +65,15 @@ A partially licensed product will allow you to determine which parts of your pro
 
 Change the following at your project's main class:
 
----php
+```php
 use WPMVC\Bridge;
----
+```
 
 For:
 
----php
+```php
 use WPMVC\Addons\LicenseKey\Core\LicensedBridge as Bridge;
----
+```
 
 Then call main class property `is_valid` to add restrictions in your code. An example used within a controller:
 ```php

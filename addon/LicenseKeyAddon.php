@@ -111,4 +111,12 @@ class LicenseKeyAddon extends Addon
     {
         $this->mvc->call( 'SettingsController@admin_menu', $this->main );
     }
+    /**
+     * Displays missing license key notice.
+     * @since 1.0.0
+     */
+    public function license_key_notice()
+    {
+        $this->mvc->view->show( 'admin.license-notice', ['main' => $this->main] );
+    }
 }

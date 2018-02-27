@@ -60,7 +60,10 @@ class FullyLicensedBridge extends LicensedBridge
      */
     public function add_hooks()
     {
-        if ( $this->is_valid )
+        if ( $this->is_valid ) {
             parent::add_hooks();
+        } else {
+            add_action( 'admin_notices', [&$this, 'addon_license_key_notice'] );
+        }
     }
 }

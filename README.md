@@ -19,6 +19,7 @@ Then on your project's `app\config\app.php` add the following on the addons arra
 ```
 
 If your are using a plugin, add the following to the paths array:
+
 ---php
     'paths' => [
 
@@ -32,6 +33,7 @@ If your are using a plugin, add the following to the paths array:
 ---
 
 Add an extra set of settings prior to closing the configuration array:
+
 ---php
     'license_api' => [
         'url'           => 'http://your-store.com/wp-admin/admin-ajax.php',

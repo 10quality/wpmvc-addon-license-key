@@ -1,5 +1,4 @@
 # License Key Addon (for Wordpress MVC)
---------------------------------
 
 Transforms your Wordpress MVC project into a licensed product in seconds using WooCommerce License Keys API.
 
@@ -15,16 +14,13 @@ composer require 10quality/wpmvc-addon-license-key;
 
 Then on your project's `app\config\app.php` add the following on the addons array:
 ```php
-    'WPMVC\Addons\LicenseKey\Addon',
+    'WPMVC\Addons\LicenseKey\LicenseKeyAddon',
 ```
 
-If your are using a plugin, add the following to the paths array:
+If your are using a plugin, add the following to the end paths array:
 ```php
     'paths' => [
-        'base'          => __DIR__ . '/../',
-        'controllers'   => __DIR__ . '/../Controllers/',
-        'views'         => __DIR__ . '/../../assets/views/',
-        'log'           => get_wp_home_path() . './wpmvc/log',
+
         'base_file'     => 'your-plugin-folder-name/plugin.php',
     ],
 ```
@@ -36,8 +32,7 @@ Add an extra set of settings prior to closing the configuration array:
         'store_code'    => 'YOUR STORE CODE',
         'sku'           => 'PRODUCT SKU',
         'frequency'     => null,
-        'option_name'   => 'WORDPRESS OPTION NAME OF CHOICE',
-        'ck'            => 'AN ENCRYPTION KEY'
+        'option_name'   => 'WORDPRESS OPTION NAME OF CHOICE'
     ],
 ```
 

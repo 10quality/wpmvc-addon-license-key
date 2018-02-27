@@ -14,7 +14,7 @@ use WPMVC\Addon;
  * @license MIT
  * @version 1.0.0
  */
-class Addon extends Addon
+class LicenseKeyAddon extends Addon
 {
     /**
      * Constant tag.
@@ -50,7 +50,33 @@ class Addon extends Addon
      */
     public function is_license_key_valid()
     {
-        return $this->mvc->call( 'LicenseController@validate' );
+        return $this->mvc->call( 'LicenseController@validate', $this->main );
+    }
+    /**
+     * Returns API response.
+     * Tries to activate a license key.
+     * @since 1.0.0
+     *
+     * @param string $license_key
+     *
+     * @return object
+     */
+    public function activate_license_key( $license_key )
+    {
+        return $this->mvc->call( 'LicenseController@activate',  $license_key, $this->main );
+    }
+    /**
+     * Returns API response.
+     * Tries to deactivate the activated license key.
+     * @since 1.0.0
+     *
+     * @param string $license_key
+     *
+     * @return object
+     */
+    public function deactivate_license_key()
+    {
+        return $this->mvc->call( 'LicenseController@deactivate',  $this->main );
     }
     /**
      * Returns action links.
@@ -62,7 +88,7 @@ class Addon extends Addon
      */
     public function filter_action_links( $links )
     {
-        return $this->mvc->action( 'SettingsController@action_links', $links );
+        return $this->mvc->action( 'SettingsController@action_links', $links, $this->main );
     }
     /**
      * Action hook.
@@ -70,6 +96,6 @@ class Addon extends Addon
      */
     public function admin_menu()
     {
-        $this->mvc->call( 'SettingsController@admin_menu' );
+        $this->mvc->call( 'SettingsController@admin_menu', $this->main );
     }
 }

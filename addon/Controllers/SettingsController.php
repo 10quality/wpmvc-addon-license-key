@@ -23,10 +23,10 @@ class SettingsController extends Controller
      *
      * @return array
      */
-    public function action_links( $links )
+    public function action_links( $links, $main )
     {
-        $ref = $this->main->config->get( 'type' ) === 'plugin'
-            ? strtolower( $this->main->config->get( 'namespace' ) )
+        $ref = $main->config->get( 'type' ) === 'plugin'
+            ? strtolower( $main->config->get( 'namespace' ) )
             : 'theme';
         $links[] = '<a href="'.admin_url( '/admin.php?page=addon-manage-license-key&ref='.$ref ).'">'
             .__( 'Manage License Key', 'addon' )
@@ -41,7 +41,7 @@ class SettingsController extends Controller
      *
      * @return array
      */
-    public function admin_menu( $links )
+    public function admin_menu()
     {
         add_submenu_page(
             null,
@@ -64,8 +64,8 @@ class SettingsController extends Controller
         $ref = Request::input( 'ref', 'theme' );
         global $$ref;
         // Show
-        $this->view->show('admin.manage-license', [
+        $this->view->show('admin.manage-page', [
             'main'  => $$ref,
-        ])
+        ]);
     }
 }

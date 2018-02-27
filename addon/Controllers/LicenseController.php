@@ -20,6 +20,12 @@ use WPMVC\MVC\Controller;
 class LicenseController extends Controller
 {
     /**
+     * Main class reference.
+     * @since 1.0.0
+     * @var object
+     */
+    protected $main;
+    /**
      * Activates a license key.
      * @since 1.0.0
      *
@@ -27,8 +33,9 @@ class LicenseController extends Controller
      *
      * @return object
      */
-    public function activate( $license_key )
+    public function activate( $license_key, $main )
     {
+        $this->main = $main;
         if ( empty( $license_key ) )
             throw new Exception('License Key can not be empty.');
         // Get config 
@@ -59,8 +66,9 @@ class LicenseController extends Controller
      *
      * @return bool
      */
-    public function validate()
+    public function validate( $main )
     {
+        $this->main = $main;
         $license = $this->load_decrypt();
         if ( $license === false )
             return false;
@@ -79,8 +87,9 @@ class LicenseController extends Controller
      *
      * @return mixed|bool|object
      */
-    public function deactivate()
+    public function deactivate( $main )
     {
+        $this->main = $main;
         $license = $this->load_decrypt();
         if ( $license === false )
             return false;
@@ -106,7 +115,7 @@ class LicenseController extends Controller
         $license = get_option( $this->main->config->get('license_api.option_name'), false );
         // Decrypt
         if ( is_string( $license ) )
-            return Crypto::decrypt( $license, $this->main->config->get('license_api.ck') );
+            return Crypto::decrypt( $license, $this->main->config->get('license_api.store_code') );
         return $license;
     }
     /**
@@ -120,7 +129,7 @@ class LicenseController extends Controller
         update_option(
             $this->main->config->get('license_api.option_name'),
             is_string( $license )
-                ? Crypto::encrypt( $license, $this->main->config->get('license_api.ck') )
+                ? Crypto::encrypt( $license, $this->main->config->get('license_api.store_code') )
                 : false,
             true //autoload
         );

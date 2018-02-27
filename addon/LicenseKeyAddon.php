@@ -50,7 +50,7 @@ class LicenseKeyAddon extends Addon
      */
     public function is_license_key_valid()
     {
-        return $this->mvc->call( 'LicenseController@validate', $this->main );
+        return $this->mvc->action( 'LicenseController@validate', $this->main );
     }
     /**
      * Returns API response.
@@ -63,7 +63,7 @@ class LicenseKeyAddon extends Addon
      */
     public function activate_license_key( $license_key )
     {
-        return $this->mvc->call( 'LicenseController@activate',  $license_key, $this->main );
+        return $this->mvc->action( 'LicenseController@activate',  $license_key, $this->main );
     }
     /**
      * Returns API response.
@@ -76,7 +76,20 @@ class LicenseKeyAddon extends Addon
      */
     public function deactivate_license_key()
     {
-        return $this->mvc->call( 'LicenseController@deactivate',  $this->main );
+        return $this->mvc->action( 'LicenseController@deactivate',  $this->main );
+    }
+    /**
+     * Returns API response.
+     * Tries to deactivate the activated license key.
+     * @since 1.0.0
+     *
+     * @param string $license_key
+     *
+     * @return object
+     */
+    public function get_license_key()
+    {
+        return $this->mvc->action( 'LicenseController@get',  $this->main );
     }
     /**
      * Returns action links.

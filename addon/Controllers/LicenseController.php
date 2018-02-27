@@ -2,12 +2,13 @@
 
 namespace WPMVC\Addons\LicenseKey\Controllers;
 
+use Closure;
 use Exception;
-use Defuse\Crypto\Crypto;
 use LicenseKeys\Utility\Api;
 use LicenseKeys\Utility\Client;
 use LicenseKeys\Utility\LicenseRequest;
 use WPMVC\MVC\Controller;
+use WPMVC\Addons\LicenseKey\Utility\Encryption;
 
 /**
  * License key controller.
@@ -30,6 +31,7 @@ class LicenseController extends Controller
      * @since 1.0.0
      *
      * @param string $license_key License key to activate.
+     * @param object $main        Main class reference.
      *
      * @return object
      */
@@ -37,12 +39,12 @@ class LicenseController extends Controller
     {
         $this->main = $main;
         if ( empty( $license_key ) )
-            throw new Exception('License Key can not be empty.');
+            throw new Exception( 'License Key can not be empty.' );
         // Get config 
-        $url = $this->main->config->get('license_api.url');
-        $store_code = $this->main->config->get('license_api.store_code');
-        $sku = $this->main->config->get('license_api.sku');
-        $frequency = $this->main->config->get('license_api.frequency');
+        $url = $this->main->config->get( 'license_api.url' );
+        $store_code = $this->main->config->get( 'license_api.store_code' );
+        $sku = $this->main->config->get( 'license_api.sku' );
+        $frequency = $this->main->config->get( 'license_api.frequency' );
         if ( empty( $frequency ) )
             $frequency = LicenseRequest::DAILY_FREQUENCY;
         // Validate
@@ -57,12 +59,14 @@ class LicenseController extends Controller
                     $frequency
                 );
             },
-            $this->encrypt_save
+            Closure::fromCallable( [&$this, 'encrypt_save'] )
         );
     }
     /**
      * Validates activated license key.
      * @since 1.0.0
+     *
+     * @param object $main Main class reference.
      *
      * @return bool
      */
@@ -78,12 +82,14 @@ class LicenseController extends Controller
             function() use( &$license ) {
                 return new LicenseRequest( $license );
             },
-            $this->encrypt_save
+            Closure::fromCallable( [&$this, 'encrypt_save'] )
         );
     }
     /**
      * Deactivates activated license key.
      * @since 1.0.0
+     *
+     * @param object $main Main class reference.
      *
      * @return mixed|bool|object
      */
@@ -99,8 +105,22 @@ class LicenseController extends Controller
             function() use( &$license ) {
                 return new LicenseRequest( $license );
             },
-            $this->encrypt_save
+            Closure::fromCallable( [&$this, 'encrypt_save'] )
         );
+    }
+    /**
+     * Returns license string only if activated.
+     * @since 1.0.0
+     *
+     * @param object $main Main class reference.
+     *
+     * @return object
+     */
+    public function get( $main )
+    {
+        $this->main = $main;
+        if ( $main->is_valid )
+            return json_decode( $this->load_decrypt() );
     }
     /**
      * Returns license string stored at Wordpress options.
@@ -109,27 +129,35 @@ class LicenseController extends Controller
      *
      * @return mixed|string|bool
      */
-    private function load_decrypt()
+    protected function load_decrypt()
     {
         // Load
-        $license = get_option( $this->main->config->get('license_api.option_name'), false );
+        $license = get_option( $this->main->config->get( 'license_api.option_name' ), false );
         // Decrypt
         if ( is_string( $license ) )
-            return Crypto::decrypt( $license, $this->main->config->get('license_api.store_code') );
+            return Encryption::decode(
+                $license,
+                $this->main->config->get( 'license_api.store_code' )
+            );
         return $license;
     }
     /**
      * Saves and encrypts license string into Wordpress options.
      * @since 1.0.0
      *
+     * @param string $license License string to save.
+     *
      * @param mixed|null|string $license License string.
      */
-    private function encrypt_save( $license )
+    protected function encrypt_save( $license )
     {
         update_option(
-            $this->main->config->get('license_api.option_name'),
+            $this->main->config->get( 'license_api.option_name' ),
             is_string( $license )
-                ? Crypto::encrypt( $license, $this->main->config->get('license_api.store_code') )
+                ? Encryption::encode(
+                    $license,
+                    $this->main->config->get( 'license_api.store_code' )
+                )
                 : false,
             true //autoload
         );

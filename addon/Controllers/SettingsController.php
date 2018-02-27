@@ -19,7 +19,8 @@ class SettingsController extends Controller
      * Returns action links.
      * @since 1.0.0
      *
-     * @param array $links
+     * @param array  $links
+     * @param object $main Main class reference.
      *
      * @return array
      */
@@ -63,9 +64,32 @@ class SettingsController extends Controller
         // Get global variable
         $ref = Request::input( 'ref', 'theme' );
         global $$ref;
+        $errors = [];
+        $response = null;
+        $license_key = null;
+        // Handle actions
+        if ( Request::input( 'action' ) === 'activate' ) {
+            $license_key = trim( Request::input( 'license_key' ) );
+            if ( empty( $license_key ) ) {
+                $errors['license_key'] = [__( 'License Key is required.', 'addon' )];
+            } else {
+                $response = $$ref->addon_activate_license_key( $license_key );
+                if ( isset( $response->errors ) )
+                    $errors = $response->errors;
+            }
+        }
+        if ( Request::input( 'action' ) === 'deactivate' ) {
+            $response = $$ref->addon_deactivate_license_key();
+            if ( isset( $response->errors ) )
+                $errors = $response->errors;
+        }
         // Show
-        $this->view->show('admin.manage-page', [
-            'main'  => $$ref,
-        ]);
+        $this->view->show( 'admin.manage-page', [
+            'main'          => $$ref,
+            'license'       => $$ref->addon_get_license_key(),
+            'errors'        => $errors,
+            'response'      => $response,
+            'license_key'   => $license_key,
+        ] );
     }
 }

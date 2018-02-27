@@ -11,7 +11,7 @@ use WPMVC\MVC\Controller;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.0
+ * @version 1.0.1
  */
 class SettingsController extends Controller
 {
@@ -66,6 +66,7 @@ class SettingsController extends Controller
     /**
      * Displays manage page.
      * @since 1.0.0
+     * @since 1.0.1 Validates reference.
      *
      * @return array
      */
@@ -77,30 +78,36 @@ class SettingsController extends Controller
         $errors = [];
         $response = null;
         $license_key = null;
-        // Handle actions
-        if ( Request::input( 'action' ) === 'activate' ) {
-            $license_key = trim( Request::input( 'license_key' ) );
-            if ( empty( $license_key ) ) {
-                $errors['license_key'] = [__( 'License Key is required.', 'addon' )];
-            } else {
-                $response = $$ref->addon_activate_license_key( $license_key );
+        if ( $$ref !== null ) {
+            // Handle actions
+            if ( Request::input( 'action' ) === 'activate' ) {
+                $license_key = trim( Request::input( 'license_key' ) );
+                if ( empty( $license_key ) ) {
+                    $errors['license_key'] = [__( 'License Key is required.', 'addon' )];
+                } else {
+                    $response = $$ref->addon_activate_license_key( $license_key );
+                    if ( isset( $response->errors ) )
+                        $errors = $response->errors;
+                }
+            }
+            if ( Request::input( 'action' ) === 'deactivate' ) {
+                $response = $$ref->addon_deactivate_license_key();
                 if ( isset( $response->errors ) )
                     $errors = $response->errors;
             }
+            // Show
+            $this->view->show( 'admin.manage-page', [
+                'main'          => $$ref,
+                'license'       => $$ref->addon_get_license_key(),
+                'errors'        => $errors,
+                'response'      => $response,
+                'license_key'   => $license_key,
+                'ref'           => $ref,
+            ] );
+        } else {
+            $this->view->show( 'admin.not-found', [
+                'ref'           => $ref,
+            ] );
         }
-        if ( Request::input( 'action' ) === 'deactivate' ) {
-            $response = $$ref->addon_deactivate_license_key();
-            if ( isset( $response->errors ) )
-                $errors = $response->errors;
-        }
-        // Show
-        $this->view->show( 'admin.manage-page', [
-            'main'          => $$ref,
-            'license'       => $$ref->addon_get_license_key(),
-            'errors'        => $errors,
-            'response'      => $response,
-            'license_key'   => $license_key,
-            'ref'           => $ref,
-        ] );
     }
 }

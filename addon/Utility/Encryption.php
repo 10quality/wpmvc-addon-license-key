@@ -9,7 +9,7 @@ namespace WPMVC\Addons\LicenseKey\Utility;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.0
+ * @version 1.0.2
  */
 class Encryption
 {
@@ -47,6 +47,7 @@ class Encryption
     /**
      * Encode.
      * @since 1.0.0
+     * @since 1.0.2 Removed key based encryption for better php support.
      *
      * @param string $string String to encode.
      * @param string $key    Encode key.
@@ -55,16 +56,12 @@ class Encryption
      */
     public static  function encode( $value, $key )
     { 
-        if(!$value){return false;}
-        $text = $value;
-        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
-        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-        $crypttext = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, str_pad($key, 16, 'x'), $text, MCRYPT_MODE_ECB, $iv);
-        return trim(self::safe_b64encode($crypttext)); 
+        return trim(self::safe_b64encode($value)); 
     }
     /**
      * Decode.
      * @since 1.0.0
+     * @since 1.0.2 Removed key based encryption for better php support.
      *
      * @param string $string String to decode.
      * @param string $key    Decode key.
@@ -73,11 +70,6 @@ class Encryption
      */
     public static function decode( $value, $key )
     {
-        if(!$value){return false;}
-        $crypttext = self::safe_b64decode($value); 
-        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
-        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-        $decrypttext = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, str_pad($key, 16, 'x'), $crypttext, MCRYPT_MODE_ECB, $iv);
-        return trim($decrypttext);
+        return trim(self::safe_b64decode($value));
     }
 }

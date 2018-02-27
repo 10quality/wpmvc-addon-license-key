@@ -1,0 +1,8 @@
+# Dependencies
+/vendor
+/node_modules
+/bower_components
+
+# Generated files
+.tmp
+composer.lock

@@ -7,7 +7,7 @@ Transforms your Wordpress MVC project into a licensed product in seconds using W
 
 ## Install
 
-```php
+```bash
 composer require 10quality/wpmvc-addon-license-key;
 ```
 
@@ -16,7 +16,7 @@ composer require 10quality/wpmvc-addon-license-key;
 Then on your project's `app\config\app.php` add the following on the addons array:
 ```php
     'WPMVC\Addons\LicenseKey\Addon',
-```-
+```
 
 If your are using a plugin, add the following to the paths array:
 ---php

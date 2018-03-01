@@ -12,7 +12,7 @@ use WPMVC\Addon;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.0
+ * @version 1.0.4
  */
 class LicenseKeyAddon extends Addon
 {
@@ -33,6 +33,8 @@ class LicenseKeyAddon extends Addon
     /**
      * Function called when user is on admin dashboard.
      * Add wordpress hooks (actions, filters) here.
+     * @since 1.0.0
+     * @since 1.0.4 Checks for updates.
      */
     public function on_admin()
     {
@@ -43,7 +45,8 @@ class LicenseKeyAddon extends Addon
                 [&$this, 'filter_action_links']
             );
         // Add manage page
-        add_action('admin_menu', [&$this, 'admin_menu'], 99);
+        add_action( 'admin_menu', [&$this, 'admin_menu'], 99 );
+        add_action( 'admin_notices', [&$this, 'update_notice'] );
     }
     /**
      * Returns flag indicating if license key is valid.
@@ -121,5 +124,31 @@ class LicenseKeyAddon extends Addon
     public function license_key_notice()
     {
         $this->mvc->view->show( 'admin.license-notice', ['main' => $this->main] );
+    }
+    /**
+     * Action hook.
+     * @since 1.0.4
+     */
+    public function update_notice()
+    {
+        $is_updated = get_option(
+            $this->main->config->get( 'updater.option' ),
+            true
+        );
+        // Update available
+        if ( ! $is_updated ) {
+            // Display notice
+            $params = [
+                'main'          => 'main',
+                'license_key'   => $this->get_license_key(),
+            ]
+            ob_start();
+            $this->main->view( 'admin.update-notice', $params );
+            $view = ob_get_clean();
+            // Show notice
+            echo empty( $view )
+                ? $this->mvc->view->get( 'admin.update-notice', $params )
+                : $view;
+        }
     }
 }

@@ -8,7 +8,8 @@
         "php": ">=5.4.0",
         "10quality/wpmvc-core": "3.0.*",
         "10quality/wpmvc-addon": "1.0.*",
-        "10quality/license-keys-php-client": "1.0.*"
+        "10quality/license-keys-php-client": "1.0.*",
+        "10quality/wpmvc-addon-updater": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "4.4.*"

@@ -5,7 +5,7 @@
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.0
+ * @version 1.0.5
  */
 ?>
 <div class="notice notice-warning">
@@ -18,7 +18,7 @@
     </p>
     <p>
         <?php $main->addon_updater_button(
-            $license_key->data->downloadable['url'],
+            $license_key->data->downloadable->url,
             'button-primary'
         ) ?>
     </p>

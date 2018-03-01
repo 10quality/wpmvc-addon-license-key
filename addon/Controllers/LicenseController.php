@@ -16,7 +16,7 @@ use WPMVC\Addons\LicenseKey\Utility\Encryption;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.4
+ * @version 1.0.6
  */
 class LicenseController extends Controller
 {
@@ -145,6 +145,7 @@ class LicenseController extends Controller
      * Saves and encrypts license string into Wordpress options.
      * @since 1.0.0
      * @since 1.0.4 Handles updates checking.
+     * @since 1.0.6 Fixes downloadable structure.
      *
      * @param string $license License string to save.
      *
@@ -158,7 +159,7 @@ class LicenseController extends Controller
         if ( $old !== null
             && isset( $new->data->downloadable )
             && isset( $old->data->downloadable )
-            && $new->data->downloadable['name'] !== $old->data->downloadable['name']
+            && $new->data->downloadable->name !== $old->data->downloadable->name
         ) {
             // Update is available
             update_option(

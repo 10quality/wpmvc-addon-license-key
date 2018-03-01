@@ -156,6 +156,8 @@ class LicenseController extends Controller
         $new = json_decode( $license );
         $old = $this->get( $this->main );
         if ( $old !== null
+            && isset( $new->data->downloadable )
+            && isset( $old->data->downloadable )
             && $new->data->downloadable['name'] !== $old->data->downloadable['name']
         ) {
             // Update is available

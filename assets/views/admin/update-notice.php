@@ -1,8 +1,6 @@
 <?php
 /**
- * Missing License key error notice.
- *
- * @see FullyLicensedBridge>add_hooks()
+ * Available update notice.
  *
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey

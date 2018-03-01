@@ -12,7 +12,7 @@ use WPMVC\Addon;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.4
+ * @version 1.0.5
  */
 class LicenseKeyAddon extends Addon
 {
@@ -128,6 +128,7 @@ class LicenseKeyAddon extends Addon
     /**
      * Action hook.
      * @since 1.0.4
+     * @since 1.0.5 Fixes.
      */
     public function update_notice()
     {
@@ -141,7 +142,7 @@ class LicenseKeyAddon extends Addon
             $params = [
                 'main'          => 'main',
                 'license_key'   => $this->get_license_key(),
-            ]
+            ];
             ob_start();
             $this->main->view( 'admin.update-notice', $params );
             $view = ob_get_clean();

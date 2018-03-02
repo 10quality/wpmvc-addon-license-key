@@ -12,7 +12,7 @@ use WPMVC\MVC\Controller;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.9
+ * @version 1.0.10
  */
 class SettingsController extends Controller
 {

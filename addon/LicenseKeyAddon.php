@@ -12,7 +12,7 @@ use WPMVC\Addon;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.5
+ * @version 1.0.6
  */
 class LicenseKeyAddon extends Addon
 {
@@ -51,12 +51,15 @@ class LicenseKeyAddon extends Addon
     /**
      * Returns flag indicating if license key is valid.
      * @since 1.0.0
+     * @since 1.0.6 Forced validation parameter.
+     *
+     * @param bool $force Flag that forces validation against the server.
      *
      * @return bool
      */
-    public function is_license_key_valid()
+    public function is_license_key_valid( $force = false )
     {
-        return $this->mvc->action( 'LicenseController@validate', $this->main );
+        return $this->mvc->action( 'LicenseController@validate', $this->main, $force );
     }
     /**
      * Returns API response.

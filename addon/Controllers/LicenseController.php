@@ -66,11 +66,12 @@ class LicenseController extends Controller
      * Validates activated license key.
      * @since 1.0.0
      *
-     * @param object $main Main class reference.
+     * @param object $main  Main class reference.
+     * @param bool   $force Flag that forces validation against the server.
      *
      * @return bool
      */
-    public function validate( $main )
+    public function validate( $main, $force = false )
     {
         $this->main = $main;
         $license = $this->load_decrypt();
@@ -82,7 +83,8 @@ class LicenseController extends Controller
             function() use( &$license ) {
                 return new LicenseRequest( $license );
             },
-            Closure::fromCallable( [&$this, 'encrypt_save'] )
+            Closure::fromCallable( [&$this, 'encrypt_save'] ),
+            $force
         );
     }
     /**
@@ -156,7 +158,7 @@ class LicenseController extends Controller
         // Check for downloadbles and updates
         $new = json_decode( $license );
         $old = $this->get( $this->main );
-        if ( $old !== null
+        if ( $old !== false
             && isset( $new->data->downloadable )
             && isset( $old->data->downloadable )
             && $new->data->downloadable->name !== $old->data->downloadable->name

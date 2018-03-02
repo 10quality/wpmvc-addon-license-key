@@ -2,6 +2,7 @@
 
 namespace WPMVC\Addons\LicenseKey\Controllers;
 
+use stdClass;
 use WPMVC\Request;
 use WPMVC\MVC\Controller;
 

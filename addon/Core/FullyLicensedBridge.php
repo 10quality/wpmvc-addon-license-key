@@ -12,53 +12,25 @@ use WPMVC\Addons\LicenseKey\LicenseKeyAddon as Addon;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.0
+ * @version 1.0.8
  */
 class FullyLicensedBridge extends LicensedBridge
 {
     /**
-     * Called by autoload to init bridge.
+     * Called by autoload to create hooks.
+     * Delay add hooks until plugins have loaded
      * @since 1.0.0
-     *
-     * @return void
-     */
-    public function autoload_init()
-    {
-        if ( $this->is_valid ) {
-            parent::autoload_init();
-        } else {
-            // Only init this addon
-            for ( $i = count( $this->addons ) - 1; $i >= 0; --$i ) {
-                if ( isset( $this->addons[$i]->tag ) && $this->addons[$i]->tag === Addon::TAG )
-                    $this->addons[$i]->init();
-            }
-        }
-    }
-    /**
-     * Called by autoload to init bridge on admin.
-     * @since 1.0.0
-     *
-     * @return void
-     */
-    public function autoload_on_admin()
-    {
-        if ( $this->is_valid ) {
-            parent::autoload_on_admin();
-        } else {
-            // Only init this addon
-            for ( $i = count( $this->addons ) - 1; $i >= 0; --$i ) {
-                if ( isset( $this->addons[$i]->tag ) && $this->addons[$i]->tag === Addon::TAG )
-                    $this->addons[$i]->on_admin();
-            }
-        }
-    }
-    /**
-     * Called by autoload to init bridge.
-     * @since 1.0.0
-     *
-     * @return void
+     * @since 1.0.8 Delayed hooks creation.
      */
     public function add_hooks()
+    {
+        add_action( 'plugins_loaded', [&$this, 'protected_hooks'] );
+    }
+    /**
+     * Create hooks.
+     * @since 1.0.8
+     */
+    public function protected_hooks()
     {
         if ( $this->is_valid ) {
             parent::add_hooks();

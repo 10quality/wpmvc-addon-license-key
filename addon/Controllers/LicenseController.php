@@ -16,7 +16,7 @@ use WPMVC\Addons\LicenseKey\Utility\Encryption;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.6
+ * @version 1.0.7
  */
 class LicenseController extends Controller
 {
@@ -148,6 +148,7 @@ class LicenseController extends Controller
      * @since 1.0.0
      * @since 1.0.4 Handles updates checking.
      * @since 1.0.6 Fixes downloadable structure.
+     * @since 1.0.7 Changes order check.
      *
      * @param string $license License string to save.
      *
@@ -158,18 +159,6 @@ class LicenseController extends Controller
         // Check for downloadbles and updates
         $new = json_decode( $license );
         $old = $this->get( $this->main );
-        if ( $old !== false
-            && isset( $new->data->downloadable )
-            && isset( $old->data->downloadable )
-            && $new->data->downloadable->name !== $old->data->downloadable->name
-        ) {
-            // Update is available
-            update_option(
-                $this->main->config->get( 'updater.option' ),
-                false,
-                true //autoload
-            );
-        }
         // Save license string
         update_option(
             $this->main->config->get( 'license_api.option_name' ),
@@ -181,5 +170,17 @@ class LicenseController extends Controller
                 : false,
             true //autoload
         );
+        if ( $old !== false
+            && isset( $new->data->downloadable )
+            && isset( $old->data->downloadable )
+            && $new->data->downloadable->name !== $old->data->downloadable->name
+        ) {
+            // Update is available
+            update_option(
+                $this->main->config->get( 'updater.option' ),
+                0,
+                true //autoload
+            );
+        }
     }
 }

@@ -5,7 +5,7 @@
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.1
+ * @version 1.0.9
  */
 ?>
 <style type="text/css">
@@ -32,6 +32,7 @@ table.short_table input {
 }
 .actions button {
     float: right;
+    margin-left: 10px !important;
 }
 .actions button.remove {
     float: right;
@@ -100,6 +101,10 @@ span.status-invalid {
             </div>
         </div>
     <?php endif ?>
+    <?php if ( !empty( $response ) && $activated ) : ?>
+        <script type="text/javascript">location.reload();</script>
+        <?php die ?>
+    <?php endif ?>
     <div class="panel">
         <?php if ( $license ) : ?>
             <h2><?php _e( 'License Key Activated', 'addon' ) ?></h2>
@@ -142,8 +147,8 @@ span.status-invalid {
                     </tr>
                 </tbody>
             </table>
-            <form method="POST">
-                <div class="actions">
+            <div class="actions">
+                <form method="POST">
                     <button class="button remove"
                         type="submit"
                         name="action"
@@ -151,8 +156,15 @@ span.status-invalid {
                     >
                         <?php _e( 'Deactivate', 'addon' ) ?>
                     </button>
-                </div>
-            </form>
+                    <button class="button button-primary"
+                        type="submit"
+                        name="action"
+                        value="validate"
+                    >
+                        <?php _e( 'Validate', 'addon' ) ?>
+                    </button>
+                </form>
+            </div>
         <?php else : ?>
             <h2><?php _e( 'Activate your License Key', 'addon' ) ?></h2>
             <form method="POST">

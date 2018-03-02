@@ -16,7 +16,7 @@ use WPMVC\Addons\LicenseKey\Utility\Encryption;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.7
+ * @version 1.0.9
  */
 class LicenseController extends Controller
 {
@@ -113,6 +113,7 @@ class LicenseController extends Controller
     /**
      * Returns license string only if activated.
      * @since 1.0.0
+     * @since 1.0.9 Refactored
      *
      * @param object $main Main class reference.
      *
@@ -121,8 +122,8 @@ class LicenseController extends Controller
     public function get( $main )
     {
         $this->main = $main;
-        if ( $main->is_valid )
-            return json_decode( $this->load_decrypt() );
+        $license_key = $this->load_decrypt();
+        return $license_key !== false ? json_decode( $license_key ) : $license_key;
     }
     /**
      * Returns license string stored at Wordpress options.

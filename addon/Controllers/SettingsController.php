@@ -11,7 +11,7 @@ use WPMVC\MVC\Controller;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.1
+ * @version 1.0.9
  */
 class SettingsController extends Controller
 {
@@ -67,6 +67,7 @@ class SettingsController extends Controller
      * Displays manage page.
      * @since 1.0.0
      * @since 1.0.1 Validates reference.
+     * @since 1.0.9 Activated flag added, validation action added.
      *
      * @return array
      */
@@ -78,6 +79,7 @@ class SettingsController extends Controller
         $errors = [];
         $response = null;
         $license_key = null;
+        $activated = false;
         if ( $$ref !== null ) {
             // Handle actions
             if ( Request::input( 'action' ) === 'activate' ) {
@@ -86,6 +88,8 @@ class SettingsController extends Controller
                     $errors['license_key'] = [__( 'License Key is required.', 'addon' )];
                 } else {
                     $response = $$ref->addon_activate_license_key( $license_key );
+                    if ( isset( $response->error ) && $response->error === false )
+                        $activated = true;
                     if ( isset( $response->errors ) )
                         $errors = $response->errors;
                 }
@@ -95,6 +99,16 @@ class SettingsController extends Controller
                 if ( isset( $response->errors ) )
                     $errors = $response->errors;
             }
+            if ( Request::input( 'action' ) === 'validate' ) {
+                $is_valid = $$ref->addon_is_license_key_valid( true );
+                $response = new stdClass;
+                $response->error=  !$is_valid;
+                if ( $is_valid ) {
+                    $response->message = __( 'License Key is valid.', 'addon' );
+                } else {
+                    $response->errors = [ 'activation_id' => __( 'License Key is invalid.', 'addon' ) ];
+                }
+            }
             // Show
             $this->view->show( 'admin.manage-page', [
                 'main'          => $$ref,
@@ -103,6 +117,7 @@ class SettingsController extends Controller
                 'response'      => $response,
                 'license_key'   => $license_key,
                 'ref'           => $ref,
+                'activated'     => $activated,
             ] );
         } else {
             $this->view->show( 'admin.not-found', [

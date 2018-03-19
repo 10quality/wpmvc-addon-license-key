@@ -12,7 +12,7 @@ use WPMVC\Addon;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.7
+ * @version 1.0.11
  */
 class LicenseKeyAddon extends Addon
 {
@@ -46,7 +46,7 @@ class LicenseKeyAddon extends Addon
             );
         // Add manage page
         add_action( 'admin_menu', [&$this, 'admin_menu'], 99 );
-        add_action( 'admin_notices', [&$this, 'update_notice'] );
+        add_action( 'admin_notices', [&$this, 'update_notice'], 999 );
     }
     /**
      * Returns flag indicating if license key is valid.
@@ -133,27 +133,50 @@ class LicenseKeyAddon extends Addon
      * @since 1.0.4
      * @since 1.0.5 Fixes.
      * @since 1.0.7 Fixes main class parameter.
+     * @since 1.0.11 Enable updates only if plugin is valid.
      */
     public function update_notice()
     {
-        $is_updated = get_option(
-            $this->main->config->get( 'updater.option' ),
-            true
-        );
-        // Update available
-        if ( ! $is_updated ) {
-            // Display notice
-            $params = [
-                'main'          => $this->main,
-                'license_key'   => $this->get_license_key(),
-            ];
-            ob_start();
-            $this->main->view( 'admin.update-notice', $params );
-            $view = ob_get_clean();
-            // Show notice
-            echo empty( $view )
-                ? $this->mvc->view->get( 'admin.update-notice', $params )
-                : $view;
+        if ( $this->main->is_valid ) {
+            $is_updated = get_option(
+                $this->main->config->get( 'updater.option' ),
+                true
+            );
+            // Update available
+            if ( ! $is_updated ) {
+                // Display notice
+                $params = [
+                    'main'          => $this->main,
+                    'license_key'   => $this->get_license_key(),
+                ];
+                ob_start();
+                $this->main->view( 'admin.update-notice', $params );
+                $view = ob_get_clean();
+                // Show notice
+                echo empty( $view )
+                    ? $this->mvc->view->get( 'admin.update-notice', $params )
+                    : $view;
+            }
         }
+    }
+    /**
+     * Returns flag indicating if license string is valid.
+     * @since 1.0.11
+     *
+     * @return bool
+     */
+    public function is_license_string_valid()
+    {
+        return $this->mvc->action( 'LicenseController@is_valid', $this->main );
+    }
+    /**
+     * Validates license key. This validation is delayed until wordpress `init` action is ran.
+     * Action "init".
+     * @since 1.0.11
+     */
+    public function license_key_delayed_validation()
+    {
+        if ( !$this->main->is_valid )
+            add_action( 'admin_notices', [&$this, 'license_key_notice'] );
     }
 }

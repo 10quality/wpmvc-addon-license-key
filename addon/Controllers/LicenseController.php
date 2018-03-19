@@ -16,7 +16,7 @@ use WPMVC\Addons\LicenseKey\Utility\Encryption;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.9
+ * @version 1.0.11
  */
 class LicenseController extends Controller
 {
@@ -126,16 +126,36 @@ class LicenseController extends Controller
         return $license_key !== false ? json_decode( $license_key ) : $license_key;
     }
     /**
+     * Returns flag indicating if license string is empty or not.
+     * @since 1.0.11
+     *
+     * @param object $main Main class reference.
+     *
+     * @return mixed|bool|int Returns flag if license string is present, retuns 0 if no string is found in wordpress.
+     */
+    public function is_valid( $main )
+    {
+        $this->main = $main;
+        $license = $this->load_decrypt();
+        if ($license === 0)
+            return null;
+        if ($license === false)
+            return false;
+        $license = new LicenseRequest( $license );
+        return !$license->isEmpty;
+    }
+    /**
      * Returns license string stored at Wordpress options.
      * Decrypts license prior returning.
      * @since 1.0.0
+     * @since 1.0.11 Default license value set to 0.
      *
      * @return mixed|string|bool
      */
     protected function load_decrypt()
     {
         // Load
-        $license = get_option( $this->main->config->get( 'license_api.option_name' ), false );
+        $license = get_option( $this->main->config->get( 'license_api.option_name' ), 0 );
         // Decrypt
         if ( is_string( $license ) )
             return Encryption::decode(

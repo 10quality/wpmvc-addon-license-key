@@ -12,10 +12,17 @@ use WPMVC\MVC\Controller;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.10
+ * @version 1.0.12
  */
 class SettingsController extends Controller
 {
+    /**
+     * Flag that prevents registration duplicates.
+     * @since 1.0.12
+     *
+     * @var bool
+     */
+    private static $has_registered = false;
     /**
      * Returns action links.
      * @since 1.0.0
@@ -38,6 +45,7 @@ class SettingsController extends Controller
     /**
      * Registers admin page.
      * @since 1.0.0
+     * @since 1.0.12 Prevents double registering.
      *
      * @param object $main Main class reference.
      *
@@ -45,24 +53,27 @@ class SettingsController extends Controller
      */
     public function admin_menu( $main )
     {
-        if ( $main->config->get( 'type' ) === 'plugin' ) {
-            add_submenu_page(
-                null,
-                __( 'Manage License Key', 'license_keys' ),
-                __( 'License Key', 'license_keys' ),
-                'manage_options',
-                'addon-manage-license-key',
-                [&$this, 'display_page']
-            );
-        } else if ( $main->config->get( 'type' ) === 'theme' ) {
-            add_theme_page(
-                __( 'Manage License Key', 'license_keys' ),
-                __( 'License Key', 'license_keys' ),
-                'manage_options',
-                'addon-manage-license-key',
-                [&$this, 'display_page']
-            );
-        } 
+        if ( !static::$has_registered ) {
+            if ( $main->config->get( 'type' ) === 'plugin' ) {
+                add_submenu_page(
+                    null,
+                    __( 'Manage License Key', 'license_keys' ),
+                    __( 'License Key', 'license_keys' ),
+                    'manage_options',
+                    'addon-manage-license-key',
+                    [&$this, 'display_page']
+                );
+            } else if ( $main->config->get( 'type' ) === 'theme' ) {
+                add_theme_page(
+                    __( 'Manage License Key', 'license_keys' ),
+                    __( 'License Key', 'license_keys' ),
+                    'manage_options',
+                    'addon-manage-license-key',
+                    [&$this, 'display_page']
+                );
+            }
+            static::$has_registered = true;
+        }
     }
     /**
      * Displays manage page.

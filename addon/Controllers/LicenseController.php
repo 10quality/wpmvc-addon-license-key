@@ -2,7 +2,6 @@
 
 namespace WPMVC\Addons\LicenseKey\Controllers;
 
-use Closure;
 use Exception;
 use LicenseKeys\Utility\Api;
 use LicenseKeys\Utility\Client;
@@ -16,7 +15,7 @@ use WPMVC\Addons\LicenseKey\Utility\Encryption;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.11
+ * @version 1.0.14
  */
 class LicenseController extends Controller
 {
@@ -29,6 +28,7 @@ class LicenseController extends Controller
     /**
      * Activates a license key.
      * @since 1.0.0
+     * @since 1.0.14 Closure removed, callable passed instead.
      *
      * @param string $license_key License key to activate.
      * @param object $main        Main class reference.
@@ -59,12 +59,13 @@ class LicenseController extends Controller
                     $frequency
                 );
             },
-            Closure::fromCallable( [&$this, 'encrypt_save'] )
+            [&$this, 'encrypt_save']
         );
     }
     /**
      * Validates activated license key.
      * @since 1.0.0
+     * @since 1.0.14 Closure removed, callable passed instead.
      *
      * @param object $main  Main class reference.
      * @param bool   $force Flag that forces validation against the server.
@@ -83,13 +84,14 @@ class LicenseController extends Controller
             function() use( &$license ) {
                 return new LicenseRequest( $license );
             },
-            Closure::fromCallable( [&$this, 'encrypt_save'] ),
+            [&$this, 'encrypt_save'],
             $force
         );
     }
     /**
      * Deactivates activated license key.
      * @since 1.0.0
+     * @since 1.0.14 Closure removed, callable passed instead.
      *
      * @param object $main Main class reference.
      *
@@ -107,7 +109,7 @@ class LicenseController extends Controller
             function() use( &$license ) {
                 return new LicenseRequest( $license );
             },
-            Closure::fromCallable( [&$this, 'encrypt_save'] )
+            [&$this, 'encrypt_save']
         );
     }
     /**
@@ -170,12 +172,13 @@ class LicenseController extends Controller
      * @since 1.0.4 Handles updates checking.
      * @since 1.0.6 Fixes downloadable structure.
      * @since 1.0.7 Changes order check.
+     * @since 1.0.14 Access changed to public to make it a valid callable.
      *
      * @param string $license License string to save.
      *
      * @param mixed|null|string $license License string.
      */
-    protected function encrypt_save( $license )
+    public function encrypt_save( $license )
     {
         // Check for downloadbles and updates
         $new = json_decode( $license );

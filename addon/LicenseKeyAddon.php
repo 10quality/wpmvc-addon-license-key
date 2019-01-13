@@ -12,7 +12,7 @@ use WPMVC\Addon;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.11
+ * @version 1.1.0
  */
 class LicenseKeyAddon extends Addon
 {
@@ -46,7 +46,7 @@ class LicenseKeyAddon extends Addon
             );
         // Add manage page
         add_action( 'admin_menu', [&$this, 'admin_menu'], 99 );
-        add_action( 'admin_notices', [&$this, 'update_notice'], 999 );
+        add_action( 'admin_notices', [&$this, 'notices'], 999 );
     }
     /**
      * Returns flag indicating if license key is valid.
@@ -134,8 +134,9 @@ class LicenseKeyAddon extends Addon
      * @since 1.0.5 Fixes.
      * @since 1.0.7 Fixes main class parameter.
      * @since 1.0.11 Enable updates only if plugin is valid.
+     * @since 1.1.0 Extension or renewal notices
      */
-    public function update_notice()
+    public function notices()
     {
         if ( $this->main->is_valid ) {
             $is_updated = get_option(
@@ -155,6 +156,52 @@ class LicenseKeyAddon extends Addon
                 // Show notice
                 echo empty( $view )
                     ? $this->mvc->view->get( 'admin.update-notice', $params )
+                    : $view;
+            }
+        }
+        // Check for renewal notices
+        if ( $this->main->config->get( 'license_notices.enabled' ) ) {
+            $params = [
+                'main'          => $this->main,
+                'license_key'   => $this->get_license_key(),
+            ];
+            if ( !isset( $params['license_key']->data->ctoken ) || $params['license_key']->data->ctoken === null )
+                return;
+            $has_notified = get_option(
+                $this->main->config->get( 'license_notices.option' ),
+                0,
+                true //autoload
+            );
+            // Renew?
+            if ( time() > $params['license_key']->data->expire ) {
+                $params['renew_url'] = sprintf(
+                    '%s?license_key=%s&license_key_ctoken=%s&license_key_action=renew'
+                    $this->main->config->get( 'license_notices.cart_url' ),
+                    $params['license_key']->data->the_key,
+                    $params['license_key']->data->ctoken
+                );
+                ob_start();
+                $this->main->view( 'admin.renew-notice', $params );
+                $view = ob_get_clean();
+                // Show notice
+                echo empty( $view )
+                    ? $this->mvc->view->get( 'admin.renew-notice', $params )
+                    : $view;
+            } else if ( !$has_notified
+                && time() > strtotime( $this->main->config->get( 'license_notices.extend_interval' ), $params['license_key']->data->expire ) 
+            ) {
+                $params['extend_url'] = sprintf(
+                    '%s?license_key=%s&license_key_ctoken=%s&license_key_action=extend'
+                    $this->main->config->get( 'license_notices.cart_url' ),
+                    $params['license_key']->data->the_key,
+                    $params['license_key']->data->ctoken
+                );
+                ob_start();
+                $this->main->view( 'admin.extend-notice', $params );
+                $view = ob_get_clean();
+                // Show notice
+                echo empty( $view )
+                    ? $this->mvc->view->get( 'admin.extend-notice', $params )
                     : $view;
             }
         }

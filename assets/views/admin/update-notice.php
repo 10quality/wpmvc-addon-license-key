@@ -5,13 +5,13 @@
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.5
+ * @version 1.1.0
  */
 ?>
 <div class="notice notice-warning">
     <p>
         <?= sprintf(
-            __( 'New update available for %s <strong>%s</strong>.', 'addon' ),
+            __( 'New update available for %s <strong>%s</strong>.', 'wpmvc-addon-license-key' ),
             $main->config->get( 'type' ),
             $main->config->get( 'license_api.name' )
         ) ?>

@@ -5,7 +5,7 @@
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.9
+ * @version 1.1.0
  */
 ?>
 <style type="text/css">
@@ -74,8 +74,8 @@ span.status-invalid {
 <div class="wrap addon-license-key <?= $ref ?>-license-key">
     <h1 class="wp-heading-inline">
         <?= sprintf(
-            __( 'Manage License Key for %s <strong>%s</strong>', 'addon' ),
-            __( $main->config->get('type'), 'addon' ),
+            __( 'Manage License Key for %s <strong>%s</strong>', 'wpmvc-addon-license-key' ),
+            __( $main->config->get('type'), 'wpmvc-addon-license-key' ),
             $main->config->get('license_api.name')
         ) ?>
     </h1>
@@ -107,41 +107,41 @@ span.status-invalid {
     <?php endif ?>
     <div class="panel">
         <?php if ( $license ) : ?>
-            <h2><?php _e( 'License Key Activated', 'addon' ) ?></h2>
+            <h2><?php _e( 'License Key Activated', 'wpmvc-addon-license-key' ) ?></h2>
             <table class="short_table">
                 <tbody>
                     <tr>
-                        <th><?php _e( 'License Key Code', 'addon' ) ?></th>
+                        <th><?php _e( 'License Key Code', 'wpmvc-addon-license-key' ) ?></th>
                         <td><code class="the-key"><?= $license->data->the_key ?></code></td>
                     </tr>
                     <tr>
-                        <th><?php _e( 'Activation ID', 'addon' ) ?></th>
+                        <th><?php _e( 'Activation ID', 'wpmvc-addon-license-key' ) ?></th>
                         <td>
                             <?= $license->data->activation_id ?>
                             <?php if ( $license->data->activation_id === 404 ) : ?>
-                                <span> <?php _e( '(development activation)', 'addon' ) ?></span>
+                                <span> <?php _e( '(development activation)', 'wpmvc-addon-license-key' ) ?></span>
                             <?php endif ?>
                         </td>
                     </tr>
                     <?php if ( $license->data->activation_id !== 404 ) : ?>
                         <tr>
-                            <th><?php _e( 'Activation date', 'addon' ) ?></th>
+                            <th><?php _e( 'Activation date', 'wpmvc-addon-license-key' ) ?></th>
                             <td><?= date( get_option( 'date_format' ), $license->data->activation_id ) ?></td>
                         </tr>
                     <?php endif ?>
                     <?php if ( $license->data->expire ) : ?>
                         <tr>
-                            <th><?php _e( 'Expires', 'addon' ) ?></th>
+                            <th><?php _e( 'Expires', 'wpmvc-addon-license-key' ) ?></th>
                             <td><?= date( get_option( 'date_format' ), $license->data->expire ) ?></td>
                         </tr>
                     <?php endif ?>
                     <tr>
-                        <th><?php _e( 'Status', 'addon' ) ?></th>
+                        <th><?php _e( 'Status', 'wpmvc-addon-license-key' ) ?></th>
                         <td>
                             <?php if ( $main->is_valid ) : ?>
-                                <span class="status-valid"><?php _e( 'Valid activation.', 'addon' ) ?></span>
+                                <span class="status-valid"><?php _e( 'Valid activation.', 'wpmvc-addon-license-key' ) ?></span>
                             <?php else : ?>
-                                <span class="status-invalid"><?php _e( 'Activation no longer valid.', 'addon' ) ?></span>
+                                <span class="status-invalid"><?php _e( 'Activation no longer valid.', 'wpmvc-addon-license-key' ) ?></span>
                             <?php endif ?>
                         </td>
                     </tr>
@@ -154,29 +154,29 @@ span.status-invalid {
                         name="action"
                         value="deactivate"
                     >
-                        <?php _e( 'Deactivate', 'addon' ) ?>
+                        <?php _e( 'Deactivate', 'wpmvc-addon-license-key' ) ?>
                     </button>
                     <button class="button button-primary"
                         type="submit"
                         name="action"
                         value="validate"
                     >
-                        <?php _e( 'Validate', 'addon' ) ?>
+                        <?php _e( 'Validate', 'wpmvc-addon-license-key' ) ?>
                     </button>
                 </form>
             </div>
         <?php else : ?>
-            <h2><?php _e( 'Activate your License Key', 'addon' ) ?></h2>
+            <h2><?php _e( 'Activate your License Key', 'wpmvc-addon-license-key' ) ?></h2>
             <form method="POST">
                 <table class="short_table">
                     <tbody>
                         <tr>
-                            <th><?php _e( 'License Key Code', 'addon' ) ?></th>
+                            <th><?php _e( 'License Key Code', 'wpmvc-addon-license-key' ) ?></th>
                             <td>
                                 <input name="license_key"
                                     class="input"
                                     type="text"
-                                    placeholder="<?php _e( 'XXXXXXXXXXXXXXXXXXXXXXXXX-XXX', 'addon' ) ?>"
+                                    placeholder="<?php _e( 'XXXXXXXXXXXXXXXXXXXXXXXXX-XXX', 'wpmvc-addon-license-key' ) ?>"
                                     value="<?= $license_key ?>"
                                 />
                             </td>
@@ -189,7 +189,7 @@ span.status-invalid {
                         name="action"
                         value="activate"
                     >
-                        <?php _e( 'Activate', 'addon' ) ?>
+                        <?php _e( 'Activate', 'wpmvc-addon-license-key' ) ?>
                     </button>
                 </div>
             </form>

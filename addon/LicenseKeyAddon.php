@@ -35,6 +35,7 @@ class LicenseKeyAddon extends Addon
      * Add wordpress hooks (actions, filters) here.
      * @since 1.0.0
      * @since 1.0.4 Checks for updates.
+     * @since 1.1.0 Added lang files.
      */
     public function on_admin()
     {
@@ -47,6 +48,8 @@ class LicenseKeyAddon extends Addon
         // Add manage page
         add_action( 'admin_menu', [&$this, 'admin_menu'], 99 );
         add_action( 'admin_notices', [&$this, 'notices'], 999 );
+        // Localization
+        add_action( 'plugins_loaded', [&$this, 'plugins_loaded'], 10 );
     }
     /**
      * Returns flag indicating if license key is valid.
@@ -225,5 +228,14 @@ class LicenseKeyAddon extends Addon
     {
         if ( !$this->main->is_valid )
             add_action( 'admin_notices', [&$this, 'license_key_notice'] );
+    }
+    /**
+     * Loads text domain for localization.
+     * Action "plugins_loaded"
+     * @since 1.1.0
+     */
+    public function plugins_loaded()
+    {
+        $this->mvc->call( 'SettingsController@load_textdomain', $this->main );
     }
 }

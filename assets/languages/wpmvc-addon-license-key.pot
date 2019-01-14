@@ -1,0 +1,95 @@
+# Copyright (C) 2019 10 Quality
+msgid ""
+msgstr ""
+"Project-Id-Version: wpmvc-addon-license-key\n"
+"POT-Creation-Date: 2019-01-12 01:36-0600\n"
+"PO-Revision-Date: 2018-09-03 01:36-0600\n"
+"Language-Team: 10 Quality Studio\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+
+msgid "Your license key for <strong>%s</strong> will expire soon (on "%s")."
+msgstr ""
+
+msgid "Extend license"
+msgstr ""
+
+msgid "Please activate a valid license key for %s "<strong>%s</strong>"."
+msgstr ""
+
+msgid "Activate License Key"
+msgstr ""
+
+msgid "Manage License Key for %s <strong>%s</strong>"
+msgstr ""
+
+msgid "License Key Activated"
+msgstr ""
+
+msgid "License Key Code"
+msgstr ""
+
+msgid "Activation ID"
+msgstr ""
+
+msgid "(development activation)"
+msgstr ""
+
+msgid "Activation date"
+msgstr ""
+
+msgid "Expires"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Valid activation."
+msgstr ""
+
+msgid "Activation no longer valid."
+msgstr ""
+
+msgid "Deactivate"
+msgstr ""
+
+msgid "Validate"
+msgstr ""
+
+msgid "Activate your License Key"
+msgstr ""
+
+msgid "Activate"
+msgstr ""
+
+msgid "Not found"
+msgstr ""
+
+msgid "No license key service found for plugin or theme with reference "<strong>%s</strong>"."
+msgstr ""
+
+msgid "Your license key for <strong>%s</strong> has expired."
+msgstr ""
+
+msgid "Renew license"
+msgstr ""
+
+msgid "New update available for %s <strong>%s</strong>."
+msgstr ""
+
+msgid "Manage License Key"
+msgstr ""
+
+msgid "License Key"
+msgstr ""
+
+msgid "License Key is required."
+msgstr ""
+
+msgid "License Key is valid."
+msgstr ""
+
+msgid "License Key is invalid."
+msgstr ""

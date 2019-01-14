@@ -12,7 +12,7 @@ use WPMVC\MVC\Controller;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.12
+ * @version 1.1.0
  */
 class SettingsController extends Controller
 {
@@ -57,16 +57,16 @@ class SettingsController extends Controller
             if ( $main->config->get( 'type' ) === 'plugin' ) {
                 add_submenu_page(
                     null,
-                    __( 'Manage License Key', 'license_keys' ),
-                    __( 'License Key', 'license_keys' ),
+                    __( 'Manage License Key', 'wpmvc-addon-license-key' ),
+                    __( 'License Key', 'wpmvc-addon-license-key' ),
                     'manage_options',
                     'addon-manage-license-key',
                     [&$this, 'display_page']
                 );
             } else if ( $main->config->get( 'type' ) === 'theme' ) {
                 add_theme_page(
-                    __( 'Manage License Key', 'license_keys' ),
-                    __( 'License Key', 'license_keys' ),
+                    __( 'Manage License Key', 'wpmvc-addon-license-key' ),
+                    __( 'License Key', 'wpmvc-addon-license-key' ),
                     'manage_options',
                     'addon-manage-license-key',
                     [&$this, 'display_page']
@@ -97,7 +97,7 @@ class SettingsController extends Controller
             if ( Request::input( 'action' ) === 'activate' ) {
                 $license_key = trim( Request::input( 'license_key' ) );
                 if ( empty( $license_key ) ) {
-                    $errors['license_key'] = [__( 'License Key is required.', 'addon' )];
+                    $errors['license_key'] = [__( 'License Key is required.', 'wpmvc-addon-license-key' )];
                 } else {
                     $response = $$ref->addon_activate_license_key( $license_key );
                     if ( isset( $response->error ) && $response->error === false )
@@ -116,9 +116,9 @@ class SettingsController extends Controller
                 $response = new stdClass;
                 $response->error=  !$is_valid;
                 if ( $is_valid ) {
-                    $response->message = __( 'License Key is valid.', 'addon' );
+                    $response->message = __( 'License Key is valid.', 'wpmvc-addon-license-key' );
                 } else {
-                    $response->errors = [ 'activation_id' => __( 'License Key is invalid.', 'addon' ) ];
+                    $response->errors = [ 'activation_id' => __( 'License Key is invalid.', 'wpmvc-addon-license-key' ) ];
                 }
             }
             // Show
@@ -136,5 +136,19 @@ class SettingsController extends Controller
                 'ref'           => $ref,
             ] );
         }
+    }
+    /**
+     * Loads text domain for localization.
+     * @since 1.1.0
+     *
+     * @param object $main Main class reference.
+     */
+    public function load_textdomain( $main )
+    {
+        load_plugin_textdomain(
+            'wpmvc-addon-license-key',
+            false,
+            $main->config->get( 'paths.root_folder' ) . '/vendor/10quality/wpmvc-addon-license-key/assets/languages/'
+        );
     }
 }

@@ -1,0 +1,106 @@
+# Copyright (C) 2019 10 Quality
+msgid ""
+msgstr ""
+"Project-Id-Version: wpmvc-addon-license-key\n"
+"POT-Creation-Date: 2019-01-12 01:36-0600\n"
+"PO-Revision-Date: 2019-01-14 09:49-0600\n"
+"Language-Team: 10 Quality Studio\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.5\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: es_ES\n"
+
+msgid "Your license key for <strong>%s</strong> will expire soon (on \"%s\")."
+msgstr ""
+"Tu clave de licencia para <strong>%s</strong> va a expirer pronto (en \"%s"
+"\")."
+
+msgid "Extend license"
+msgstr "Extender licencia"
+
+msgid "Please activate a valid license key for %s \"<strong>%s</strong>\"."
+msgstr ""
+"Por favor active una clave de licencia válida para %s \"<strong>%s</strong>"
+"\"."
+
+msgid "Activate License Key"
+msgstr "Activar Clave de Licencia"
+
+msgid "Manage License Key for %s <strong>%s</strong>"
+msgstr "Administrar clave de licencia para %s <strong>%s</strong>"
+
+msgid "License Key Activated"
+msgstr "Clave de licencia activada"
+
+msgid "License Key Code"
+msgstr "Código de clave de licencia"
+
+msgid "Activation ID"
+msgstr "ID de activación"
+
+msgid "(development activation)"
+msgstr "(activación de desarrollo)"
+
+msgid "Activation date"
+msgstr "Fecha de activación"
+
+msgid "Expires"
+msgstr "Expira"
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "Valid activation."
+msgstr "Activación válida."
+
+msgid "Activation no longer valid."
+msgstr "La activación ya no es válida."
+
+msgid "Deactivate"
+msgstr "Desactivar"
+
+msgid "Validate"
+msgstr "Validar"
+
+msgid "Activate your License Key"
+msgstr "Activa tu clave de licencia"
+
+msgid "Activate"
+msgstr "Activar"
+
+msgid "Not found"
+msgstr "No encontrado"
+
+msgid ""
+"No license key service found for plugin or theme with reference \"<strong>"
+"%s</strong>\"."
+msgstr ""
+"No se encontró un servicio de clave de licencia para el plugin o tema con "
+"referencia \"<strong>%s</strong>\"."
+
+msgid "Your license key for <strong>%s</strong> has expired."
+msgstr "Su clave de licencia para <strong>%s</strong> ha caducado."
+
+msgid "Renew license"
+msgstr "Renovar licencia"
+
+msgid "New update available for %s <strong>%s</strong>."
+msgstr "Nueva actualización disponible para %s <strong>%s</strong>."
+
+msgid "Manage License Key"
+msgstr "Administrar Clave de Licencia"
+
+msgid "License Key"
+msgstr "Clave de Licencia"
+
+msgid "License Key is required."
+msgstr "Clave de licencia es requerida."
+
+msgid "License Key is valid."
+msgstr "Clave de licencia es válida."
+
+msgid "License Key is invalid."
+msgstr "Clave de licencia es inválida."

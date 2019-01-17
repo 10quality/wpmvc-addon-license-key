@@ -247,7 +247,7 @@ class LicenseKeyAddon extends Addon
      * 
      * @return string
      */
-    private function get_cart_url($key, $ctoken, $action)
+    private function get_cart_url( $key, $ctoken, $action )
     {
         $cart_url = $this->main->config->get( 'license_notices.cart_url' );
         $cart_url .= strpos( $cart_url , '?' ) === false ? '?' : '&';

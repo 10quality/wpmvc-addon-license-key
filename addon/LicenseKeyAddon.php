@@ -178,11 +178,10 @@ class LicenseKeyAddon extends Addon
                     || $params['license_key']->data->status === 'inactive'
                 ) {
                     // Renew?
-                    $params['renew_url'] = sprintf(
-                        '%s?license_key=%s&license_key_ctoken=%s&license_key_action=renew',
-                        $this->main->config->get( 'license_notices.cart_url' ),
+                    $params['renew_url'] = $this->get_cart_url(
                         $params['license_key']->data->the_key,
-                        $params['license_key']->data->ctoken
+                        $params['license_key']->data->ctoken,
+                        'renew'
                     );
                     ob_start();
                     $this->main->view( 'admin.renew-notice', $params );
@@ -193,11 +192,10 @@ class LicenseKeyAddon extends Addon
                         : $view;
                 } else if ( time() > strtotime( $this->main->config->get( 'license_notices.extend_interval' ), $params['license_key']->data->expire ) ) {
                     // Extend?
-                    $params['extend_url'] = sprintf(
-                        '%s?license_key=%s&license_key_ctoken=%s&license_key_action=extend',
-                        $this->main->config->get( 'license_notices.cart_url' ),
+                    $params['extend_url'] = $this->get_cart_url(
                         $params['license_key']->data->the_key,
-                        $params['license_key']->data->ctoken
+                        $params['license_key']->data->ctoken,
+                        'extend'
                     );
                     ob_start();
                     $this->main->view( 'admin.extend-notice', $params );
@@ -238,5 +236,27 @@ class LicenseKeyAddon extends Addon
     public function plugins_loaded()
     {
         $this->mvc->call( 'SettingsController@load_textdomain', $this->main );
+    }
+    /**
+     * Returns a link to the cart for renewals or extensions.
+     * @param 1.1.0
+     * 
+     * @param string $key    License Key code.
+     * @param string $ctoken Token code.
+     * @param string $action Cart action.
+     * 
+     * @return string
+     */
+    private function get_cart_url($key, $ctoken, $action)
+    {
+        $cart_url = $this->main->config->get( 'license_notices.cart_url' );
+        $cart_url .= strpos( $cart_url , '?' ) === false ? '?' : '&';
+        return sprintf(
+            '%slicense_key=%s&license_key_ctoken=%s&license_key_action=%s',
+            $cart_url,
+            $key,
+            $ctoken,
+            $action
+        );
     }
 }

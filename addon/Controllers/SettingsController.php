@@ -80,6 +80,7 @@ class SettingsController extends Controller
      * @since 1.0.0
      * @since 1.0.1 Validates reference.
      * @since 1.0.9 Activated flag added, validation action added.
+     * @since 1.1.0 Fixes validation.
      *
      * @return array
      */
@@ -114,12 +115,14 @@ class SettingsController extends Controller
             if ( Request::input( 'action' ) === 'validate' ) {
                 $is_valid = $$ref->addon_is_license_key_valid( true );
                 $response = new stdClass;
-                $response->error=  !$is_valid;
+                $response->error = !$is_valid;
                 if ( $is_valid ) {
                     $response->message = __( 'License Key is valid.', 'wpmvc-addon-license-key' );
                 } else {
-                    $response->errors = [ 'activation_id' => __( 'License Key is invalid.', 'wpmvc-addon-license-key' ) ];
+                    $response->errors = [ 'activation_id' => [ __( 'License Key is invalid.', 'wpmvc-addon-license-key' ) ] ];
                 }
+                if ( isset( $response->errors ) )
+                    $errors = $response->errors;
             }
             // Show
             $this->view->show( 'admin.manage-page', [

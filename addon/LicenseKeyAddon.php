@@ -3,6 +3,7 @@
 namespace WPMVC\Addons\LicenseKey;
 
 use WPMVC\Addon;
+use WPMVC\Addons\LicenseKey\Utility\Encryption;
 
 /**
  * Addon class.
@@ -168,44 +169,44 @@ class LicenseKeyAddon extends Addon
                 'main'          => $this->main,
                 'license_key'   => $this->get_license_key(),
             ];
-            if ( !isset( $params['license_key']->data->ctoken ) || $params['license_key']->data->ctoken === null )
-                return;
-            $has_notified = get_option(
-                $this->main->config->get( 'license_notices.option' ),
-                0,
-                true //autoload
-            );
-            // Renew?
-            if ( time() > $params['license_key']->data->expire ) {
-                $params['renew_url'] = sprintf(
-                    '%s?license_key=%s&license_key_ctoken=%s&license_key_action=renew'
-                    $this->main->config->get( 'license_notices.cart_url' ),
-                    $params['license_key']->data->the_key,
-                    $params['license_key']->data->ctoken
-                );
-                ob_start();
-                $this->main->view( 'admin.renew-notice', $params );
-                $view = ob_get_clean();
-                // Show notice
-                echo empty( $view )
-                    ? $this->mvc->view->get( 'admin.renew-notice', $params )
-                    : $view;
-            } else if ( !$has_notified
-                && time() > strtotime( $this->main->config->get( 'license_notices.extend_interval' ), $params['license_key']->data->expire ) 
-            ) {
-                $params['extend_url'] = sprintf(
-                    '%s?license_key=%s&license_key_ctoken=%s&license_key_action=extend'
-                    $this->main->config->get( 'license_notices.cart_url' ),
-                    $params['license_key']->data->the_key,
-                    $params['license_key']->data->ctoken
-                );
-                ob_start();
-                $this->main->view( 'admin.extend-notice', $params );
-                $view = ob_get_clean();
-                // Show notice
-                echo empty( $view )
-                    ? $this->mvc->view->get( 'admin.extend-notice', $params )
-                    : $view;
+            if ( $params['license_key'] !== false && $params['license_key']->data->expire ) {
+                // Check extension
+                if ( $params['license_key'] === false || !isset( $params['license_key']->data->ctoken ) || $params['license_key']->data->ctoken === null )
+                    return;
+                if ( time() > $params['license_key']->data->expire
+                    || $params['license_key']->data->has_expired
+                    || $params['license_key']->data->status === 'inactive'
+                ) {
+                    // Renew?
+                    $params['renew_url'] = sprintf(
+                        '%s?license_key=%s&license_key_ctoken=%s&license_key_action=renew',
+                        $this->main->config->get( 'license_notices.cart_url' ),
+                        $params['license_key']->data->the_key,
+                        $params['license_key']->data->ctoken
+                    );
+                    ob_start();
+                    $this->main->view( 'admin.renew-notice', $params );
+                    $view = ob_get_clean();
+                    // Show notice
+                    echo empty( $view )
+                        ? $this->mvc->view->get( 'admin.renew-notice', $params )
+                        : $view;
+                } else if ( time() > strtotime( $this->main->config->get( 'license_notices.extend_interval' ), $params['license_key']->data->expire ) ) {
+                    // Extend?
+                    $params['extend_url'] = sprintf(
+                        '%s?license_key=%s&license_key_ctoken=%s&license_key_action=extend',
+                        $this->main->config->get( 'license_notices.cart_url' ),
+                        $params['license_key']->data->the_key,
+                        $params['license_key']->data->ctoken
+                    );
+                    ob_start();
+                    $this->main->view( 'admin.extend-notice', $params );
+                    $view = ob_get_clean();
+                    // Show notice
+                    echo empty( $view )
+                        ? $this->mvc->view->get( 'admin.extend-notice', $params )
+                        : $view;
+                }
             }
         }
     }

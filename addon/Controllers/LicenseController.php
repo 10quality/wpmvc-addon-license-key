@@ -2,6 +2,7 @@
 
 namespace WPMVC\Addons\LicenseKey\Controllers;
 
+use stdClass;
 use Exception;
 use LicenseKeys\Utility\Api;
 use LicenseKeys\Utility\Client;
@@ -15,7 +16,7 @@ use WPMVC\Addons\LicenseKey\Utility\Encryption;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.0.14
+ * @version 1.1.0
  */
 class LicenseController extends Controller
 {
@@ -66,6 +67,7 @@ class LicenseController extends Controller
      * Validates activated license key.
      * @since 1.0.0
      * @since 1.0.14 Closure removed, callable passed instead.
+     * @since 1.1.0 Fixes validation.
      *
      * @param object $main  Main class reference.
      * @param bool   $force Flag that forces validation against the server.
@@ -79,7 +81,7 @@ class LicenseController extends Controller
         if ( $license === false )
             return false;
         // Validate
-        return Api::validate(
+        $is_valid = Api::validate(
             Client::instance(),
             function() use( &$license ) {
                 return new LicenseRequest( $license );
@@ -87,11 +89,23 @@ class LicenseController extends Controller
             [&$this, 'encrypt_save'],
             $force
         );
+        // Security invalidation
+        if ( ! $is_valid && $license ) {
+            $license = json_decode( $license );
+            $license->error = true;
+            $license->status = 500;
+            $license->message = __( 'Activation no longer valid.', 'wpmvc-addon-license-key' );
+            $license->data->status = 'inactive';
+            $license->data->has_expired = true;
+            $this->encrypt_save( json_encode( $license ) );
+        }
+        return $is_valid;
     }
     /**
      * Deactivates activated license key.
      * @since 1.0.0
      * @since 1.0.14 Closure removed, callable passed instead.
+     * @since 1.1.0
      *
      * @param object $main Main class reference.
      *
@@ -104,13 +118,20 @@ class LicenseController extends Controller
         if ( $license === false )
             return false;
         // Validate
-        return Api::deactivate(
+        $response = Api::deactivate(
             Client::instance(),
             function() use( &$license ) {
                 return new LicenseRequest( $license );
             },
             [&$this, 'encrypt_save']
         );
+        if ( $response->error === true ) {
+            $this->encrypt_save( null );
+            // Force deactivation
+            $response->error = false;
+            $response->message = __( 'Deactivated.', 'wpmvc-addon-license-key' );
+        }
+        return $response;
     }
     /**
      * Returns license string only if activated.

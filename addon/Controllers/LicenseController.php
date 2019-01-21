@@ -16,7 +16,7 @@ use WPMVC\Addons\LicenseKey\Utility\Encryption;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.1.0
+ * @version 1.1.1
  */
 class LicenseController extends Controller
 {
@@ -68,6 +68,7 @@ class LicenseController extends Controller
      * @since 1.0.0
      * @since 1.0.14 Closure removed, callable passed instead.
      * @since 1.1.0 Fixes validation.
+     * @since 1.1.1 Supports connection retries.
      *
      * @param object $main  Main class reference.
      * @param bool   $force Flag that forces validation against the server.
@@ -80,26 +81,22 @@ class LicenseController extends Controller
         $license = $this->load_decrypt();
         if ( $license === false )
             return false;
+        // Prepare connection retries
+        $allow_retry = $this->main->config->get( 'license_api.allow_retry' );
+        $retry_attempts = intval( $this->main->config->get( 'license_api.retry_attempts' ) );
+        $retry_frequency = $this->main->config->get( 'license_api.retry_frequency' );
         // Validate
-        $is_valid = Api::validate(
+        return Api::validate(
             Client::instance(),
             function() use( &$license ) {
                 return new LicenseRequest( $license );
             },
             [&$this, 'encrypt_save'],
-            $force
+            $force, // Force
+            $allow_retry === null ? true : $allow_retry,
+            $retry_attempts ? $retry_attempts : 2,
+            $retry_frequency ? $retry_frequency : '+1 hour'
         );
-        // Security invalidation
-        if ( ! $is_valid && $license ) {
-            $license = json_decode( $license );
-            $license->error = true;
-            $license->status = 500;
-            $license->message = __( 'Activation no longer valid.', 'wpmvc-addon-license-key' );
-            $license->data->status = 'inactive';
-            $license->data->has_expired = true;
-            $this->encrypt_save( json_encode( $license ) );
-        }
-        return $is_valid;
     }
     /**
      * Deactivates activated license key.

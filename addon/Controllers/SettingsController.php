@@ -142,16 +142,14 @@ class SettingsController extends Controller
     }
     /**
      * Loads text domain for localization.
-     * @since 1.1.0
+     * @since 1.1.1
      *
      * @param object $main Main class reference.
      */
     public function load_textdomain( $main )
     {
-        load_plugin_textdomain(
-            'wpmvc-addon-license-key',
-            false,
-            $main->config->get( 'paths.root_folder' ) . '/vendor/10quality/wpmvc-addon-license-key/assets/languages/'
-        );
+        $domain = 'wpmvc-addon-license-key';
+        $path = $main->config->get( 'paths.root_folder' ) . '/vendor/10quality/wpmvc-addon-license-key/assets/languages/';
+        load_textdomain( $domain, $path . $domain . '-' . get_locale() . '.mo' );
     }
 }

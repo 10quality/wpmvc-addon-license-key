@@ -12,7 +12,7 @@ use WPMVC\MVC\Controller;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.1.0
+ * @version 1.1.2
  */
 class SettingsController extends Controller
 {
@@ -142,7 +142,7 @@ class SettingsController extends Controller
     }
     /**
      * Loads text domain for localization.
-     * @since 1.1.1
+     * @since 1.1.2
      *
      * @param object $main Main class reference.
      */

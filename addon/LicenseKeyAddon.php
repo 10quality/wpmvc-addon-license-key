@@ -169,7 +169,7 @@ class LicenseKeyAddon extends Addon
                 'main'          => $this->main,
                 'license_key'   => $this->get_license_key(),
             ];
-            if ( $params['license_key'] !== false && $params['license_key']->data->expire ) {
+            if ( $params['license_key'] && $params['license_key'] !== false && $params['license_key']->data->expire ) {
                 // Check extension
                 if ( $params['license_key'] === false || !isset( $params['license_key']->data->ctoken ) || $params['license_key']->data->ctoken === null )
                     return;

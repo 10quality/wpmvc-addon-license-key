@@ -13,7 +13,7 @@ use WPMVC\Addons\LicenseKey\Utility\Encryption;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.1.0
+ * @version 1.1.4
  */
 class LicenseKeyAddon extends Addon
 {
@@ -37,6 +37,7 @@ class LicenseKeyAddon extends Addon
      * @since 1.0.0
      * @since 1.0.4 Checks for updates.
      * @since 1.1.0 Added lang files.
+     * @since 1.1.4 Fixes localization.
      */
     public function on_admin()
     {
@@ -50,7 +51,7 @@ class LicenseKeyAddon extends Addon
         add_action( 'admin_menu', [&$this, 'admin_menu'], 99 );
         add_action( 'admin_notices', [&$this, 'notices'], 999 );
         // Localization
-        add_action( 'plugins_loaded', [&$this, 'plugins_loaded'], 10 );
+        add_action( 'init', [&$this, 'plugins_loaded'], 10 );
     }
     /**
      * Returns flag indicating if license key is valid.

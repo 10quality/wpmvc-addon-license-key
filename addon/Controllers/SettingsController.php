@@ -12,7 +12,7 @@ use WPMVC\MVC\Controller;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.1.2
+ * @version 1.1.4
  */
 class SettingsController extends Controller
 {
@@ -26,6 +26,7 @@ class SettingsController extends Controller
     /**
      * Returns action links.
      * @since 1.0.0
+     * @since 1.1.4 Fixes text domain.
      *
      * @param array  $links
      * @param object $main Main class reference.
@@ -38,7 +39,7 @@ class SettingsController extends Controller
             ? strtolower( $main->config->get( 'namespace' ) )
             : 'theme';
         $links[] = '<a href="'.admin_url( '/admin.php?page=addon-manage-license-key&ref='.$ref ).'">'
-            .__( 'Manage License Key', 'addon' )
+            .__( 'Manage License Key', 'wpmvc-addon-license-key' )
             .'</a>';
         return $links;
     }
@@ -143,13 +144,22 @@ class SettingsController extends Controller
     /**
      * Loads text domain for localization.
      * @since 1.1.2
+     * @since 1.1.4 Fixes mo loading.
      *
      * @param object $main Main class reference.
      */
     public function load_textdomain( $main )
     {
         $domain = 'wpmvc-addon-license-key';
-        $path = $main->config->get( 'paths.root_folder' ) . '/vendor/10quality/wpmvc-addon-license-key/assets/languages/';
-        load_textdomain( $domain, $path . $domain . '-' . get_locale() . '.mo' );
+        load_textdomain(
+            $domain,
+            sprintf(
+                '%s/plugins/%s/vendor/10quality/wpmvc-addon-license-key/assets/languages/%s-%s.mo',
+                WP_CONTENT_DIR,
+                $main->config->get( 'paths.root_folder' ),
+                $domain,
+                is_admin() && function_exists( 'get_user_locale' ) ? get_user_locale() : get_locale()
+            )
+        );
     }
 }

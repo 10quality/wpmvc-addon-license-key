@@ -33,7 +33,7 @@ class LicensedBridge extends Bridge
         if ( $property === 'is_valid' ) {
             return $this->_isset_is_valid()
                 ? $this->_is_valid()
-                : $this->_set_is_valid( $this->addon_is_license_key_valid() );
+                : $this->_set_is_valid( $this->addon_is_license_key_softvalid() );
         }
         return parent::__get( $property );
     }

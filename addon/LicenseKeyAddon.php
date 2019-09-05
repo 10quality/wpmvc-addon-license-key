@@ -13,7 +13,7 @@ use WPMVC\Addons\LicenseKey\Utility\Encryption;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.1.5
+ * @version 1.1.7
  */
 class LicenseKeyAddon extends Addon
 {
@@ -65,6 +65,18 @@ class LicenseKeyAddon extends Addon
     public function is_license_key_valid( $force = false )
     {
         return $this->mvc->action( 'LicenseController@validate', $this->main, $force );
+    }
+    /**
+     * Returns flag indicating if license key is valid (soft validation, NON SERVER VALIDATION).
+     * @since 1.1.7
+     *
+     * @param bool $force Flag that forces validation against the server.
+     *
+     * @return bool
+     */
+    public function is_license_key_softvalid()
+    {
+        return $this->mvc->action( 'LicenseController@soft_validate', $this->main );
     }
     /**
      * Returns API response.

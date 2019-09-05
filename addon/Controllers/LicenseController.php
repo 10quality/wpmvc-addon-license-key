@@ -16,7 +16,7 @@ use WPMVC\Addons\LicenseKey\Utility\Encryption;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.1.1
+ * @version 1.1.7
  */
 class LicenseController extends Controller
 {
@@ -96,6 +96,27 @@ class LicenseController extends Controller
             $allow_retry === null ? true : $allow_retry,
             $retry_attempts ? $retry_attempts : 2,
             $retry_frequency ? $retry_frequency : '+1 hour'
+        );
+    }
+    /**
+     * Validates activated license key (soft validation, non cross-server).
+     * @since 1.1.7
+     *
+     * @param object $main  Main class reference.
+     *
+     * @return bool
+     */
+    public function soft_validate( $main )
+    {
+        $this->main = $main;
+        $license = $this->load_decrypt();
+        if ( $license === false )
+            return false;
+        // Validate
+        return Api::softValidate(
+            function() use( &$license ) {
+                return new LicenseRequest( $license );
+            }
         );
     }
     /**

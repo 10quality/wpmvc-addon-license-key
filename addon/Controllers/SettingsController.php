@@ -12,7 +12,7 @@ use WPMVC\MVC\Controller;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.1.4
+ * @version 1.1.7
  */
 class SettingsController extends Controller
 {
@@ -88,16 +88,17 @@ class SettingsController extends Controller
     public function display_page()
     {
         // Get global variable
-        $ref = Request::input( 'ref', 'theme' );
+        $ref = sanitize_text_field( Request::input( 'ref', 'theme' ) );
         global $$ref;
         $errors = [];
         $response = null;
         $license_key = null;
         $activated = false;
         if ( $$ref !== null ) {
+            $action = sanitize_text_field( Request::input( 'action' ) );
             // Handle actions
-            if ( Request::input( 'action' ) === 'activate' ) {
-                $license_key = trim( Request::input( 'license_key' ) );
+            if ( $action === 'activate' ) {
+                $license_key = sanitize_text_field( trim( Request::input( 'license_key' ) ) );
                 if ( empty( $license_key ) ) {
                     $errors['license_key'] = [__( 'License Key is required.', 'wpmvc-addon-license-key' )];
                 } else {
@@ -108,12 +109,12 @@ class SettingsController extends Controller
                         $errors = $response->errors;
                 }
             }
-            if ( Request::input( 'action' ) === 'deactivate' ) {
+            if ( $action === 'deactivate' ) {
                 $response = $$ref->addon_deactivate_license_key();
                 if ( isset( $response->errors ) )
                     $errors = $response->errors;
             }
-            if ( Request::input( 'action' ) === 'validate' ) {
+            if ( $action === 'validate' ) {
                 $is_valid = $$ref->addon_is_license_key_valid( true );
                 $response = new stdClass;
                 $response->error = !$is_valid;

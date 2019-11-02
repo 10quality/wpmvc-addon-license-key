@@ -13,7 +13,7 @@ use WPMVC\Addons\LicenseKey\Utility\Encryption;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.1.7
+ * @version 2.0.0
  */
 class LicenseKeyAddon extends Addon
 {
@@ -31,6 +31,14 @@ class LicenseKeyAddon extends Addon
      * @var string
      */
     public $tag = 'license-key';
+    /**
+     * Function called everytime.
+     * @since 2.0.0
+     */
+    public function init()
+    {
+        add_filter( 'wpmvc_update_data_' . $this->main->config->get( 'localize.textdomain' ), [&$this, 'on_update_check'] );
+    }
     /**
      * Function called when user is on admin dashboard.
      * Add wordpress hooks (actions, filters) here.
@@ -77,6 +85,16 @@ class LicenseKeyAddon extends Addon
     public function is_license_key_softvalid()
     {
         return $this->mvc->action( 'LicenseController@soft_validate', $this->main );
+    }
+    /**
+     * Returns validation response.
+     * @since 2.0.0
+     *
+     * @return object
+     */
+    public function check_license_key()
+    {
+        return $this->mvc->action( 'LicenseController@check', $this->main );
     }
     /**
      * Returns API response.
@@ -146,6 +164,18 @@ class LicenseKeyAddon extends Addon
         $this->mvc->view->show( 'admin.license-notice', ['main' => $this->main] );
     }
     /**
+     * Filters update data to check if an update is available.
+     * @since 1.2.0
+     * 
+     * @param \WPMVC\Addons\Updater\Models\UpdateData $update
+     * 
+     * @return \WPMVC\Addons\Updater\Models\UpdateData
+     */
+    public function on_update_check( $update )
+    {
+        return $this->mvc->action( 'UpdaterController@on_check', $update, $this );
+    }
+    /**
      * Action hook.
      * @since 1.0.4
      * @since 1.0.5 Fixes.
@@ -155,27 +185,6 @@ class LicenseKeyAddon extends Addon
      */
     public function notices()
     {
-        if ( $this->main->is_valid ) {
-            $is_updated = get_option(
-                $this->main->config->get( 'updater.option' ),
-                true
-            );
-            // Update available
-            if ( ! $is_updated ) {
-                // Display notice
-                $params = [
-                    'main'          => $this->main,
-                    'license_key'   => $this->get_license_key(),
-                ];
-                ob_start();
-                $this->main->view( 'admin.update-notice', $params );
-                $view = ob_get_clean();
-                // Show notice
-                echo empty( $view )
-                    ? $this->mvc->view->get( 'admin.update-notice', $params )
-                    : $view;
-            }
-        }
         // Check for renewal notices
         if ( $this->main->config->get( 'license_notices.enabled' ) ) {
             $params = [

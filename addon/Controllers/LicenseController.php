@@ -16,7 +16,7 @@ use WPMVC\Addons\LicenseKey\Utility\Encryption;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.1.7
+ * @version 2.0.0
  */
 class LicenseController extends Controller
 {
@@ -117,6 +117,29 @@ class LicenseController extends Controller
             function() use( &$license ) {
                 return new LicenseRequest( $license );
             }
+        );
+    }
+    /**
+     * Returns validation endpoint's response to check license key status.
+     * @since 2.0.0
+     *
+     * @param object $main Main class reference.
+     *
+     * @return object
+     */
+    public function check( $main )
+    {
+        $this->main = $main;
+        $license = $this->load_decrypt();
+        if ( $license === false )
+            return false;
+        // Validate and return response
+        return Api::check(
+            Client::instance(),
+            function() use( &$license ) {
+                return new LicenseRequest( $license );
+            },
+            [&$this, 'encrypt_save'],
         );
     }
     /**

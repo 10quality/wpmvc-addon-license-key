@@ -34,7 +34,7 @@ class UpdaterController extends Controller
                 $update->set_package( $response->data->downloadable->url );
             }
             // Url / Change log
-            $url = $addon->main->config->get( 'updater.change_log_url' );
+            $url = $addon->get_config( 'updater.change_log_url' );
             if ( ! empty( $url ) )
                 $update->set_url( $url );
         }

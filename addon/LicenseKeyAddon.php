@@ -264,6 +264,18 @@ class LicenseKeyAddon extends Addon
         $this->mvc->call( 'SettingsController@load_textdomain', $this->main );
     }
     /**
+     * Returns configuration value.
+     * @since 2.0.0
+     * 
+     * @param string $key
+     * 
+     * @return string
+     */
+    public function get_config( $key )
+    {
+        return $this->main->config->get( $key );
+    }
+    /**
      * Returns a link to the cart for renewals or extensions.
      * @param 1.1.0
      * 

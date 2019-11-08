@@ -5,7 +5,7 @@
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 1.1.0
+ * @version 2.0.0
  */
 ?>
 <style type="text/css">
@@ -114,22 +114,24 @@ span.status-invalid {
                         <th><?php _e( 'License Key Code', 'wpmvc-addon-license-key' ) ?></th>
                         <td><code class="the-key"><?= $license->data->the_key ?></code></td>
                     </tr>
-                    <tr>
-                        <th><?php _e( 'Activation ID', 'wpmvc-addon-license-key' ) ?></th>
-                        <td>
-                            <?= $license->data->activation_id ?>
-                            <?php if ( $license->data->activation_id === 404 ) : ?>
-                                <span> <?php _e( '(development activation)', 'wpmvc-addon-license-key' ) ?></span>
-                            <?php endif ?>
-                        </td>
-                    </tr>
-                    <?php if ( $license->data->activation_id !== 404 ) : ?>
+                    <?php if ( isset( $license->data->activation_id ) ) : ?>
+                        <tr>
+                            <th><?php _e( 'Activation ID', 'wpmvc-addon-license-key' ) ?></th>
+                            <td>
+                                <?= $license->data->activation_id ?>
+                                <?php if ( $license->data->activation_id === 404 ) : ?>
+                                    <span> <?php _e( '(development activation)', 'wpmvc-addon-license-key' ) ?></span>
+                                <?php endif ?>
+                            </td>
+                        </tr>
+                    <?php endif ?>
+                    <?php if ( isset( $license->data->activation_id ) && $license->data->activation_id !== 404 ) : ?>
                         <tr>
                             <th><?php _e( 'Activation date', 'wpmvc-addon-license-key' ) ?></th>
                             <td><?= date( get_option( 'date_format' ), $license->data->activation_id ) ?></td>
                         </tr>
                     <?php endif ?>
-                    <?php if ( $license->data->expire ) : ?>
+                    <?php if ( isset( $license->data->expire ) && $license->data->expire ) : ?>
                         <tr>
                             <th><?php _e( 'Expires', 'wpmvc-addon-license-key' ) ?></th>
                             <td><?= date( get_option( 'date_format' ), $license->data->expire ) ?></td>
@@ -145,6 +147,19 @@ span.status-invalid {
                             <?php endif ?>
                         </td>
                     </tr>
+                    <?php if ( isset( $license->data->errors ) && ! empty( $license->data->errors ) && is_array( $license->data->errors ) ) : ?>
+                        <tr>
+                            <th><?php _e( 'Errors', 'wpmvc-addon-license-key' ) ?></th>
+                            <td>
+                                <?php foreach ( $license->data->errors as $key => $message ) : ?>
+                                    <dl>
+                                        <dt><?= esc_attr( $key ) ?></dt>
+                                        <dt><?php _e( $message, 'wpmvc-addon-license-key' ) ?></dt>
+                                    </dl>
+                                <?php endforeach ?>
+                            </td>
+                        </tr>
+                    <?php endif ?>
                 </tbody>
             </table>
             <div class="actions">

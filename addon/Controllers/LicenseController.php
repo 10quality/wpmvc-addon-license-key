@@ -139,7 +139,7 @@ class LicenseController extends Controller
             function() use( &$license ) {
                 return new LicenseRequest( $license );
             },
-            [&$this, 'encrypt_save'],
+            [&$this, 'encrypt_save']
         );
     }
     /**

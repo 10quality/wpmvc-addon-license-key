@@ -31,8 +31,12 @@ class UpdaterController extends Controller
             if ( ! $response->error && $response->data && $response->data->downloadable ) {
                 // Update new downloadable
                 $update->set_version( $response->data->downloadable->name );
-                $update->set_url( $response->data->downloadable->url );
+                $update->set_package( $response->data->downloadable->url );
             }
+            // Url / Change log
+            $url = $addon->main->config->get( 'updater.change_log_url' );
+            if ( ! empty( $url ) )
+                $update->set_url( $url );
         }
         return $update;
     }

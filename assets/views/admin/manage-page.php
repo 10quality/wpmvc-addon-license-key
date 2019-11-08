@@ -61,6 +61,16 @@ span.status-invalid {
     color: #F44336;
     font-weight: 600;
 }
+dl.response-errors dt {
+    font-weight: 500;
+    font-style: italic;
+}
+ul.errors {
+    list-style: square;
+    margin: 0;
+    padding: 0;
+    color: #D32F2F;
+}
 @media screen and (max-width:440px) {
     code.the-key {
         width: 100%;
@@ -110,10 +120,12 @@ span.status-invalid {
             <h2><?php _e( 'License Key Activated', 'wpmvc-addon-license-key' ) ?></h2>
             <table class="short_table">
                 <tbody>
-                    <tr>
-                        <th><?php _e( 'License Key Code', 'wpmvc-addon-license-key' ) ?></th>
-                        <td><code class="the-key"><?= $license->data->the_key ?></code></td>
-                    </tr>
+                    <?php if ( isset( $license->data->the_key ) ) : ?>
+                        <tr>
+                            <th><?php _e( 'License Key Code', 'wpmvc-addon-license-key' ) ?></th>
+                            <td><code class="the-key"><?= $license->data->the_key ?></code></td>
+                        </tr>
+                    <?php endif ?>
                     <?php if ( isset( $license->data->activation_id ) ) : ?>
                         <tr>
                             <th><?php _e( 'Activation ID', 'wpmvc-addon-license-key' ) ?></th>
@@ -147,14 +159,24 @@ span.status-invalid {
                             <?php endif ?>
                         </td>
                     </tr>
-                    <?php if ( isset( $license->data->errors ) && ! empty( $license->data->errors ) && is_array( $license->data->errors ) ) : ?>
+                    <?php if ( isset( $license->data->errors ) && ! empty( $license->data->errors ) ) : ?>
                         <tr>
                             <th><?php _e( 'Errors', 'wpmvc-addon-license-key' ) ?></th>
                             <td>
-                                <?php foreach ( $license->data->errors as $key => $message ) : ?>
-                                    <dl>
+                                <?php foreach ( $license->data->errors as $key => $errors ) : ?>
+                                    <dl class="response-errors">
                                         <dt><?= esc_attr( $key ) ?></dt>
-                                        <dt><?php _e( $message, 'wpmvc-addon-license-key' ) ?></dt>
+                                        <dd>
+                                            <?php if ( is_array( $errors ) ) : ?>
+                                                <ul class="errors">
+                                                    <?php foreach ( $errors as $message ) :?>
+                                                        <li><?php _e( $message, 'wpmvc-addon-license-key' ) ?></li>
+                                                    <?php endforeach ?>
+                                                </ul>
+                                            <?php else : ?>
+                                                <?= $errors ?>
+                                            <?php endif ?>
+                                        </dd>
                                     </dl>
                                 <?php endforeach ?>
                             </td>

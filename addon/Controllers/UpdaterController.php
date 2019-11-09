@@ -37,6 +37,10 @@ class UpdaterController extends Controller
             $url = $addon->get_config( 'updater.change_log_url' );
             if ( ! empty( $url ) )
                 $update->set_url( $url );
+            // Custom Icon
+            $asset = $addon->get_config( 'updater.icon_asset' );
+            if ( ! empty( $asset ) )
+                $update->set_icon( assets_url( $asset, $addon->get_config( 'paths.base' ) ) );
         }
         return $update;
     }

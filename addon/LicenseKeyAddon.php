@@ -38,6 +38,7 @@ class LicenseKeyAddon extends Addon
     public function init()
     {
         add_filter( 'wpmvc_update_data_' . $this->main->config->get( 'localize.textdomain' ), [&$this, 'on_update_check'] );
+        add_filter( 'wpmvc_update_info_' . $this->main->config->get( 'localize.textdomain' ), [&$this, 'on_update_info'] );
     }
     /**
      * Function called when user is on admin dashboard.
@@ -174,6 +175,18 @@ class LicenseKeyAddon extends Addon
     public function on_update_check( $update )
     {
         return $this->mvc->action( 'UpdaterController@on_check', $update, $this );
+    }
+    /**
+     * Filters update info data to return full response data.
+     * @since 2.0.0
+     * 
+     * @param \WPMVC\Addons\Updater\Models\UpdateData $update
+     * 
+     * @return \WPMVC\Addons\Updater\Models\UpdateData
+     */
+    public function on_update_info( $update )
+    {
+        return $this->mvc->action( 'UpdaterController@on_info', $update, $this );
     }
     /**
      * Action hook.

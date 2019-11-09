@@ -76,7 +76,9 @@ class UpdaterController extends Controller
                 $errors = [];
                 if ( isset( $license_key->data->errors ) )
                     foreach ( $license_key->data->errors as $key => $messages ) {
-                        $errors = array_merge( $errors, $messages );
+                        $errors = array_merge(
+                            $errors,
+                            array_map( function( $message ) { return __( $message, 'wpmvc-addon-license-key' ); }, $messages ) );
                     }
                 return new WP_Error(
                     'plugins_api_failed',

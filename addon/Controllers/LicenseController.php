@@ -16,7 +16,7 @@ use WPMVC\Addons\LicenseKey\Utility\Encryption;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 2.0.0
+ * @version 2.0.1
  */
 class LicenseController extends Controller
 {
@@ -29,7 +29,6 @@ class LicenseController extends Controller
     /**
      * Activates a license key.
      * @since 1.0.0
-     * @since 1.0.14 Closure removed, callable passed instead.
      *
      * @param string $license_key License key to activate.
      * @param object $main        Main class reference.
@@ -46,18 +45,20 @@ class LicenseController extends Controller
         $store_code = $this->main->config->get( 'license_api.store_code' );
         $sku = $this->main->config->get( 'license_api.sku' );
         $frequency = $this->main->config->get( 'license_api.frequency' );
+        $handler = $this->main->config->get( 'license_api.handler' );
         if ( empty( $frequency ) )
             $frequency = LicenseRequest::DAILY_FREQUENCY;
         // Validate
         return Api::activate(
             Client::instance(),
-            function() use( &$url, &$store_code, &$sku, &$license_key, &$frequency ) {
+            function() use( &$url, &$store_code, &$sku, &$license_key, &$frequency, &$handler ) {
                 return LicenseRequest::create(
                     $url,
                     $store_code,
                     $sku,
                     $license_key,
-                    $frequency
+                    $frequency,
+                    $handler
                 );
             },
             [&$this, 'encrypt_save']
@@ -66,9 +67,6 @@ class LicenseController extends Controller
     /**
      * Validates activated license key.
      * @since 1.0.0
-     * @since 1.0.14 Closure removed, callable passed instead.
-     * @since 1.1.0 Fixes validation.
-     * @since 1.1.1 Supports connection retries.
      *
      * @param object $main  Main class reference.
      * @param bool   $force Flag that forces validation against the server.
@@ -145,8 +143,6 @@ class LicenseController extends Controller
     /**
      * Deactivates activated license key.
      * @since 1.0.0
-     * @since 1.0.14 Closure removed, callable passed instead.
-     * @since 1.1.0
      *
      * @param object $main Main class reference.
      *
@@ -177,7 +173,6 @@ class LicenseController extends Controller
     /**
      * Returns license string only if activated.
      * @since 1.0.0
-     * @since 1.0.9 Refactored
      *
      * @param object $main Main class reference.
      *
@@ -212,7 +207,6 @@ class LicenseController extends Controller
      * Returns license string stored at Wordpress options.
      * Decrypts license prior returning.
      * @since 1.0.0
-     * @since 1.0.11 Default license value set to 0.
      *
      * @return mixed|string|bool
      */
@@ -231,10 +225,6 @@ class LicenseController extends Controller
     /**
      * Saves and encrypts license string into Wordpress options.
      * @since 1.0.0
-     * @since 1.0.4 Handles updates checking.
-     * @since 1.0.6 Fixes downloadable structure.
-     * @since 1.0.7 Changes order check.
-     * @since 1.0.14 Access changed to public to make it a valid callable.
      *
      * @param string $license License string to save.
      *

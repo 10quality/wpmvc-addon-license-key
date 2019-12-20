@@ -13,7 +13,7 @@ use WPMVC\Addons\LicenseKey\Utility\Encryption;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 2.0.0
+ * @version 2.0.2
  */
 class LicenseKeyAddon extends Addon
 {
@@ -44,9 +44,6 @@ class LicenseKeyAddon extends Addon
      * Function called when user is on admin dashboard.
      * Add wordpress hooks (actions, filters) here.
      * @since 1.0.0
-     * @since 1.0.4 Checks for updates.
-     * @since 1.1.0 Added lang files.
-     * @since 1.1.4 Fixes localization.
      */
     public function on_admin()
     {
@@ -191,10 +188,6 @@ class LicenseKeyAddon extends Addon
     /**
      * Action hook.
      * @since 1.0.4
-     * @since 1.0.5 Fixes.
-     * @since 1.0.7 Fixes main class parameter.
-     * @since 1.0.11 Enable updates only if plugin is valid.
-     * @since 1.1.0 Extension or renewal notices
      */
     public function notices()
     {
@@ -207,6 +200,7 @@ class LicenseKeyAddon extends Addon
             if ( $params['license_key']
                 && $params['license_key'] !== false
                 && isset( $params['license_key']->data )
+                && isset( $params['license_key']->data->expire )
                 && $params['license_key']->data->expire
             ) {
                 // Check extension

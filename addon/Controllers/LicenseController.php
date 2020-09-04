@@ -4,6 +4,7 @@ namespace WPMVC\Addons\LicenseKey\Controllers;
 
 use stdClass;
 use Exception;
+use TenQuality\WP\File
 use LicenseKeys\Utility\Api;
 use LicenseKeys\Utility\Client;
 use LicenseKeys\Utility\LicenseRequest;
@@ -16,7 +17,7 @@ use WPMVC\Addons\LicenseKey\Utility\Encryption;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 2.0.1
+ * @version 2.0.3
  */
 class LicenseController extends Controller
 {
@@ -50,7 +51,7 @@ class LicenseController extends Controller
             $frequency = LicenseRequest::DAILY_FREQUENCY;
         // Validate
         return Api::activate(
-            Client::instance(),
+            Client::instance()->set( $this->get_client_options() ),
             function() use( &$url, &$store_code, &$sku, &$license_key, &$frequency, &$handler ) {
                 return LicenseRequest::create(
                     $url,
@@ -85,7 +86,7 @@ class LicenseController extends Controller
         $retry_frequency = $this->main->config->get( 'license_api.retry_frequency' );
         // Validate
         return Api::validate(
-            Client::instance(),
+            Client::instance()->set( $this->get_client_options() ),
             function() use( &$license ) {
                 return new LicenseRequest( $license );
             },
@@ -133,7 +134,7 @@ class LicenseController extends Controller
             return false;
         // Validate and return response
         return Api::check(
-            Client::instance(),
+            Client::instance()->set( $this->get_client_options() ),
             function() use( &$license ) {
                 return new LicenseRequest( $license );
             },
@@ -156,7 +157,7 @@ class LicenseController extends Controller
             return false;
         // Validate
         $response = Api::deactivate(
-            Client::instance(),
+            Client::instance()->set( $this->get_client_options() ),
             function() use( &$license ) {
                 return new LicenseRequest( $license );
             },
@@ -258,5 +259,24 @@ class LicenseController extends Controller
                 true //autoload
             );
         }
+    }
+    /**
+     * Returns available client options.
+     * @since 2.0.3
+     *
+     * @return array
+     */
+    private function get_client_options()
+    {
+        $cookie_path = WP_CONTENT_DIR . '/wpmvc/cookies';
+        $cookie_filename = $cookie_path . '/license_keys.text';
+        $file = File::auth();
+        if ( !$file->is_dir( $cookie_path ) )
+            $file->mkdir( $cookie_path );
+        // Return options
+        return [
+            CURLOPT_COOKIEFILE => $cookie_filename,
+            CURLOPT_COOKIEJAR => $cookie_filename,
+        ];
     }
 }

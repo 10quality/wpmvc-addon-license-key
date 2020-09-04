@@ -4,7 +4,7 @@ namespace WPMVC\Addons\LicenseKey\Controllers;
 
 use stdClass;
 use Exception;
-use TenQuality\WP\File
+use TenQuality\WP\File;
 use LicenseKeys\Utility\Api;
 use LicenseKeys\Utility\Client;
 use LicenseKeys\Utility\LicenseRequest;

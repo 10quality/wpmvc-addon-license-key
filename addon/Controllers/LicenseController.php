@@ -268,11 +268,14 @@ class LicenseController extends Controller
      */
     private function get_client_options()
     {
-        $cookie_path = WP_CONTENT_DIR . '/wpmvc/cookies';
-        $cookie_filename = $cookie_path . '/license_keys.text';
+        $cookie_path = $this->main->config->get( 'paths.cookies' );
+        if ( empty( $cookie_path ) )
+            $cookie_path = WP_CONTENT_DIR . '/wpmvc/cookies';
+        $cookie_filename = $cookie_path . '/lk_cookie.txt';
         $file = File::auth();
-        if ( !$file->is_dir( $cookie_path ) )
+        if ( !$file->is_dir( $cookie_path ) ) {
             $file->mkdir( $cookie_path );
+        }
         // Return options
         return [
             CURLOPT_COOKIEFILE => $cookie_filename,

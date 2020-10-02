@@ -1,6 +1,6 @@
 {
     "name": "10quality/wpmvc-addon-license-key",
-    "description": "Addon used to transforms a Wordpress MVC project into a licensed product in seconds using WooCommerce License Keys API.",
+    "description": "Addon used to transforms a WordPress MVC project into a licensed product in seconds using WooCommerce License Keys API.",
     "license": "MIT",
     "keywords": ["wpmvc", "license keys", "addon"],
     "authors": [],

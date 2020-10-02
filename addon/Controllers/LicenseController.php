@@ -17,7 +17,7 @@ use WPMVC\Addons\LicenseKey\Utility\Encryption;
  * @author Cami Mostajo
  * @package WPMVC\Addons\LicenseKey
  * @license MIT
- * @version 2.0.3
+ * @version 2.0.5
  */
 class LicenseController extends Controller
 {
@@ -49,9 +49,14 @@ class LicenseController extends Controller
         $handler = $this->main->config->get( 'license_api.handler' );
         if ( empty( $frequency ) )
             $frequency = LicenseRequest::DAILY_FREQUENCY;
+        // Token
+        $token = $this->get_token( $license_key );
         // Validate
         return Api::activate(
-            Client::instance()->set( $this->get_client_options() ),
+            $token
+                ? Client::instance()->set( $this->get_client_options() )
+                    ->header('Authorization', $token->token_type . ' ' . $token->access_token)
+                : Client::instance()->set( $this->get_client_options() ),
             function() use( &$url, &$store_code, &$sku, &$license_key, &$frequency, &$handler ) {
                 return LicenseRequest::create(
                     $url,
@@ -84,9 +89,18 @@ class LicenseController extends Controller
         $allow_retry = $this->main->config->get( 'license_api.allow_retry' );
         $retry_attempts = intval( $this->main->config->get( 'license_api.retry_attempts' ) );
         $retry_frequency = $this->main->config->get( 'license_api.retry_frequency' );
+        // Token
+        $token = null;
+        if ( $this->needs_token() ) {
+            $license_obj = json_decode( $license );
+            $token = $this->get_token( $license->data['the_key'] );
+        }
         // Validate
         return Api::validate(
-            Client::instance()->set( $this->get_client_options() ),
+            $token
+                ? Client::instance()->set( $this->get_client_options() )
+                    ->header('Authorization', $token->token_type . ' ' . $token->access_token)
+                : Client::instance()->set( $this->get_client_options() ),
             function() use( &$license ) {
                 return new LicenseRequest( $license );
             },
@@ -132,9 +146,18 @@ class LicenseController extends Controller
         $license = $this->load_decrypt();
         if ( $license === false )
             return false;
+        // Token
+        $token = null;
+        if ( $this->needs_token() ) {
+            $license_obj = json_decode( $license );
+            $token = $this->get_token( $license->data['the_key'] );
+        }
         // Validate and return response
         return Api::check(
-            Client::instance()->set( $this->get_client_options() ),
+            $token
+                ? Client::instance()->set( $this->get_client_options() )
+                    ->header('Authorization', $token->token_type . ' ' . $token->access_token)
+                : Client::instance()->set( $this->get_client_options() ),
             function() use( &$license ) {
                 return new LicenseRequest( $license );
             },
@@ -155,9 +178,18 @@ class LicenseController extends Controller
         $license = $this->load_decrypt();
         if ( $license === false )
             return false;
+        // Token
+        $token = null;
+        if ( $this->needs_token() ) {
+            $license_obj = json_decode( $license );
+            $token = $this->get_token( $license->data['the_key'] );
+        }
         // Validate
         $response = Api::deactivate(
-            Client::instance()->set( $this->get_client_options() ),
+            $token
+                ? Client::instance()->set( $this->get_client_options() )
+                    ->header('Authorization', $token->token_type . ' ' . $token->access_token)
+                : Client::instance()->set( $this->get_client_options() ),
             function() use( &$license ) {
                 return new LicenseRequest( $license );
             },
@@ -170,6 +202,30 @@ class LicenseController extends Controller
             $response->message = __( 'Deactivated.', 'wpmvc-addon-license-key' );
         }
         return $response;
+    }
+    /**
+     * Returns token endpoint's response.
+     * @since 2.0.5
+     *
+     * @param string $license_key
+     *
+     * @return object
+     */
+    private function token( $license_key )
+    {
+        if ( empty( $license_key ) )
+            throw new Exception( 'License Key can not be empty.' );
+        if ( empty( $this->main ) )
+            throw new Exception( 'Main missing, doing it wrong.' );
+        // Get config 
+        $url = $this->main->config->get( 'license_api.url' );
+        $handler = $this->main->config->get( 'license_api.handler' );
+        return Api::token(
+            Client::instance()->set( $this->get_client_options() ),
+            function() use( &$url, &$license_key, &$handler ) {
+                return LicenseRequest::token( $url, $license_key, $handler );
+            }
+        );
     }
     /**
      * Returns license string only if activated.
@@ -205,7 +261,7 @@ class LicenseController extends Controller
         return !$license->isEmpty;
     }
     /**
-     * Returns license string stored at Wordpress options.
+     * Returns license string stored at WordPress options.
      * Decrypts license prior returning.
      * @since 1.0.0
      *
@@ -281,5 +337,32 @@ class LicenseController extends Controller
             CURLOPT_COOKIEFILE => $cookie_filename,
             CURLOPT_COOKIEJAR => $cookie_filename,
         ];
+    }
+    /**
+     * Returns flag indicating if a token is required or not.
+     * @since 2.0.5
+     *
+     * @return bool
+     */
+    private function needs_token()
+    {
+        return $this->main->config->get( 'license_api.use_token' );
+    }
+    /**
+     * Returns client token.
+     * @since 2.0.5
+     *
+     * @param string $license_key
+     *
+     * @return null|object
+     */
+    private function get_token( $license_key )
+    {
+        if ( $this->needs_token() ) {
+            $token = $this->token( $license_key );
+            if ( isset( $token->access_token ) )
+                return $token;
+        }
+        return null;
     }
 }

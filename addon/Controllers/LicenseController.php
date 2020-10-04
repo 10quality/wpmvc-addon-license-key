@@ -93,7 +93,7 @@ class LicenseController extends Controller
         $token = null;
         if ( $this->needs_token() ) {
             $license_obj = json_decode( $license );
-            $token = $this->get_token( $license->data['the_key'] );
+            $token = $this->get_token( $license_obj->request->license_key );
         }
         // Validate
         return Api::validate(
@@ -150,7 +150,7 @@ class LicenseController extends Controller
         $token = null;
         if ( $this->needs_token() ) {
             $license_obj = json_decode( $license );
-            $token = $this->get_token( $license->data['the_key'] );
+            $token = $this->get_token( $license_obj->request->license_key );
         }
         // Validate and return response
         return Api::check(
@@ -182,7 +182,7 @@ class LicenseController extends Controller
         $token = null;
         if ( $this->needs_token() ) {
             $license_obj = json_decode( $license );
-            $token = $this->get_token( $license->data['the_key'] );
+            $token = $this->get_token( $license_obj->request->license_key );
         }
         // Validate
         $response = Api::deactivate(
